@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.ralphkw1.brief4idea.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.ralphkw1.brief4idea.MyBundle
 
 class MyApplicationService {
 
