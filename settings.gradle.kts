@@ -1,1 +1,2 @@
-rootProject.name = "brief4idea"
+rootProject.name = "brief4ijidea"
+

@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# brief4idea Changelog
+# dummy1 Changelog
 
 ## [Unreleased]
 ### Added
