@@ -9,6 +9,10 @@ import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import net.ddns.rkdawenterprises.brief4ijidea.Column_marking_component;
 import org.jetbrains.annotations.NotNull;
 
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
+
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Copy_to_scrap_action
         extends Plugin_action
@@ -34,15 +38,14 @@ public class Copy_to_scrap_action
         {
             int offset = -1;
 
-            if( ( editor != null ) && !Actions_component.has_selection( editor ) )
+            if( ( editor != null ) && !has_selection( editor ) )
             {
                 offset = editor.getCaretModel()
                                .getCurrentCaret()
                                .getOffset();
             }
 
-            Actions_component.do_action( "EditorCopy",
-                                         e );
+            do_action( "EditorCopy", e );
 
             if( ( editor != null ) && ( offset > 0 ) )
             {
@@ -54,7 +57,7 @@ public class Copy_to_scrap_action
 
             if( editor != null )
             {
-                Actions_component.stop_all_marking_modes( editor );
+                stop_all_marking_modes( editor );
             }
         }
         else
@@ -62,7 +65,7 @@ public class Copy_to_scrap_action
             if( editor != null )
             {
                 Column_marking_component.copy_to_scrap( editor );
-                Actions_component.stop_all_marking_modes( editor );
+                stop_all_marking_modes( editor );
             }
         }
     }

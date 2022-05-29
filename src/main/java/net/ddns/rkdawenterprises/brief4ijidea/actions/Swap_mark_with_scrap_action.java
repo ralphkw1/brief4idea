@@ -8,10 +8,13 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.datatransfer.DataFlavor;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Swap_mark_with_scrap_action
@@ -37,7 +40,7 @@ public class Swap_mark_with_scrap_action
         PsiFile file = e.getData( CommonDataKeys.PSI_FILE );
         if( ( editor == null ) || ( project == null ) || ( file == null ) ) return;
 
-        if( !Actions_component.has_selection( editor ) ) return;
+        if( !has_selection( editor ) ) return;
 
         if( !CopyPasteManager.getInstance()
                              .areDataFlavorsAvailable( DataFlavor.stringFlavor ) ) return;
@@ -47,10 +50,9 @@ public class Swap_mark_with_scrap_action
 
         if( ( text == null ) || !( text.length() > 0 ) ) return;
 
-        Actions_component.do_action( "$Cut",
-                                     e );
+        do_action( "$Cut", e );
 
-        Actions_component.stop_all_marking_modes( editor );
+        stop_all_marking_modes( editor );
 
         WriteCommandAction.runWriteCommandAction( project,
                                                   e.getPresentation()

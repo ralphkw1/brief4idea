@@ -20,9 +20,11 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.ui.JBUI
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component
 import net.ddns.rkdawenterprises.brief4ijidea.Key_event_to_string.Companion.to_string
+import net.ddns.rkdawenterprises.brief4ijidea.Messages
 import net.ddns.rkdawenterprises.brief4ijidea.State_component
+import net.ddns.rkdawenterprises.brief4ijidea.stop_all_marking_modes
+import org.jetbrains.annotations.NonNls
 import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -145,8 +147,9 @@ internal class Repeat_action_dialog(private val m_project: Project,
                                                   // Only doing this once per instance.
                                                   if(m_got_initial_focus) return;
                                                   m_got_initial_focus = true;
-
+                                                  @NonNls
                                                   val start = m_command_prompt_format.indexOf("%d");
+                                                  @NonNls
                                                   val end = start + String.format("%d",
                                                                                   m_count).length;
                                                   m_j_text_field!!.select(start,
@@ -241,6 +244,7 @@ internal class Repeat_action_dialog(private val m_project: Project,
 
             if(repeat_string == m_command_prompt_initial_instructions || repeat_string == m_command_prompt_final_instructions) return;
 
+            @NonNls
             repeat_string = repeat_string.replace("\\n",
                                                   "\n")
                 .replace("\\r",
@@ -263,7 +267,7 @@ internal class Repeat_action_dialog(private val m_project: Project,
                     result.append(repeat_string)
                 }
             }
-            Actions_component.stop_all_marking_modes(m_editor)
+            stop_all_marking_modes(m_editor)
             WriteCommandAction.runWriteCommandAction(m_project,
                                                      m_action_text,
                                                      null,
@@ -296,7 +300,9 @@ internal class Repeat_action_dialog(private val m_project: Project,
         m_j_text_field!!.text = String.format(m_command_prompt_format,
                                               m_count,
                                               m_command_prompt_initial_instructions)
+        @NonNls
         val start = m_command_prompt_format.indexOf("%d")
+        @NonNls
         val end = start + String.format("%d",
                                         m_count).length
         m_j_text_field!!.select(start,
@@ -343,6 +349,7 @@ internal class Repeat_action_dialog(private val m_project: Project,
             .split(",")
             .toTypedArray();
 
+        @NonNls
         if(!key[0].equals("KEY_PRESSED",
                           ignoreCase = true)) return false;
 
@@ -354,6 +361,7 @@ internal class Repeat_action_dialog(private val m_project: Project,
             COMMAND_STATE.IDLE ->
             {
                 // Ignore events that are just modifiers.
+                @NonNls
                 if(key[2].equals("ALT",
                                  ignoreCase = true) ||
                     key[2].equals("CTRL",
@@ -558,10 +566,10 @@ internal class Repeat_action_dialog(private val m_project: Project,
 
     companion object
     {
-        const val m_title = "Repeat String or Command";
-        const val m_command_prompt_format = "Repeat count = %d: %s";
-        const val m_command_prompt_initial_instructions = "modify count then right arrow...";
-        const val m_command_prompt_final_instructions = "type command or string...";
+        val m_title = Messages.message("repeat.string.or.command");
+        val m_command_prompt_format = Messages.message("repeat.count.d.s");
+        val m_command_prompt_initial_instructions = Messages.message("modify.count.then.right.arrow");
+        val m_command_prompt_final_instructions = Messages.message("type.command.or.string");
         const val MAX_COMMAND_COUNT = 1024;
     }
 }

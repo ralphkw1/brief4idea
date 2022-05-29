@@ -10,8 +10,8 @@ package net.ddns.rkdawenterprises.brief4ijidea.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import net.ddns.rkdawenterprises.brief4ijidea.Miscellaneous
-import net.ddns.rkdawenterprises.brief4ijidea.Miscellaneous.Companion.get_editor_content_visible_area
+import net.ddns.rkdawenterprises.brief4ijidea.get_editor_content_visible_area
+import net.ddns.rkdawenterprises.brief4ijidea.scroll_lines
 
 class Line_to_bottom_of_window_action(text: String? = null,
                                       description: String? = null) : Plugin_action(text,
@@ -45,7 +45,7 @@ class Line_to_bottom_of_window_action(text: String? = null,
             .visualPosition;
         val lines_to_bottom_of_window = visible_area_bottom_line_number - caret_position_visual.line;
 
-        Miscellaneous.scroll_lines(editor,
-                                   lines_to_bottom_of_window);
+        scroll_lines(editor,
+                     lines_to_bottom_of_window);
     }
 }

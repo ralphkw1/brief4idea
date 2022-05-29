@@ -8,6 +8,7 @@ package net.ddns.rkdawenterprises.brief4ijidea
 
 import com.intellij.openapi.actionSystem.KeyboardShortcut
 import com.intellij.openapi.keymap.impl.KeymapImpl
+import org.jetbrains.annotations.NonNls
 import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import javax.swing.KeyStroke
@@ -18,6 +19,36 @@ class Key_event_to_string
 {
     companion object
     {
+        @NonNls
+        private const val key_pressed_tag_1 = "\"<KEY_PRESSED>\"";
+        @NonNls
+        private const val key_pressed_tag_2 = "<KEY_PRESSED>,";
+        @NonNls
+        private const val key_released_tag_1 = "\"<KEY_RELEASED>\""
+        @NonNls
+        private const val key_released_tag_2 = "<KEY_RELEASED>,";
+        @NonNls
+        private const val key_typed_tag = "\"<KEY_TYPED>\"";
+        @NonNls
+        private const val unsupported_tag_1 = "\"<UNSUPPORTED>\"";
+        @NonNls
+        private const val unsupported_tag_2 = ",\"<UNSUPPORTED>\"";
+        @NonNls
+        private const val unmodified_tag = ",\"<UNMODIFIED>\"";
+        @NonNls
+        private const val k1_tag = "{\"K1\":";
+        @NonNls
+        private const val k2_tag = ",\"K2\":";
+        @NonNls
+        private const val alt_tag = "Alt";
+        @NonNls
+        private const val control_tag = "Control";
+        @NonNls
+        private const val meta_tag = "Meta";
+        @NonNls
+        private const val shift_tag = "Shift";
+
+
         /**
          * Creates a JSON string with keyboard key information. Does not support mouse buttons.
          *
@@ -25,6 +56,8 @@ class Key_event_to_string
          *         For "KEY_PRESSED" or "KEY_RELEASED" it will be in the form of [ID, MODIFIERS, VK_x(without the "VK_" prefix)].
          *         For "KEY_TYPED" it will be in the form of [ID, MODIFIERS, character].
          */
+        @NonNls
+        @JvmStatic
         fun KeyEvent.to_string(): String
         {
             val e: KeyEvent = this;
@@ -33,12 +66,12 @@ class Key_event_to_string
 
             when(e.id)
             {
-                KeyEvent.KEY_PRESSED -> builder.append("\"<KEY_PRESSED>\"");
-                KeyEvent.KEY_TYPED -> builder.append("\"<KEY_TYPED>\"");
-                KeyEvent.KEY_RELEASED -> builder.append("\"<KEY_RELEASED>\"");
+                KeyEvent.KEY_PRESSED -> builder.append(key_pressed_tag_1);
+                KeyEvent.KEY_TYPED -> builder.append(key_typed_tag);
+                KeyEvent.KEY_RELEASED -> builder.append(key_released_tag_1);
                 else ->
                 {
-                    builder.append("\"<UNSUPPORTED>\"");
+                    builder.append(unsupported_tag_1);
                 }
             }
 
@@ -47,11 +80,11 @@ class Key_event_to_string
                 KeyEvent.KEY_PRESSED, KeyEvent.KEY_TYPED, KeyEvent.KEY_RELEASED ->
                 {
                     val modifiers = get_modifiers_as_string(e);
-                    if(modifiers == null) builder.append(",\"<UNMODIFIED>\"") else builder.append(",\"$modifiers\"");
+                    if(modifiers == null) builder.append(unmodified_tag) else builder.append(",\"$modifiers\"");
                 }
                 else ->
                 {
-                    builder.append("\"<UNSUPPORTED>\"");
+                    builder.append(unsupported_tag_1);
                 }
             }
 
@@ -74,6 +107,8 @@ class Key_event_to_string
             return builder.toString();
         }
 
+        @NonNls
+        @JvmStatic
         fun KeymapImpl.to_map(): Map<String, Key_action>?
         {
             val k: KeymapImpl = this;
@@ -89,8 +124,9 @@ class Key_event_to_string
                     if(shortcut.isKeyboard)
                     {
                         val shortcut_string = (shortcut as KeyboardShortcut).to_string();
-
+                        @NonNls
                         val search_string1 = "{\"K1\":[";
+                        @NonNls
                         val search_string2 = "],\"K2\":[";
                         val start_index1 = shortcut_string.indexOf(search_string1) + search_string1.length;
                         val start_index2 = shortcut_string.indexOf(search_string2);
@@ -99,16 +135,16 @@ class Key_event_to_string
 
                         val key1 = shortcut_string.substring(start_index1, end_index1).
                             replace("\"","").
-                        replace("<KEY_PRESSED>,", "").
-                        replace("<KEY_RELEASED>,", "");
+                        replace(key_pressed_tag_2, "").
+                        replace(key_released_tag_2, "");
 
                         var key2: String? = null;
                         if(start_index2 != -1)
                         {
                             key2 = shortcut_string.substring(start_index2 + search_string2.length, end_index2).
                             replace("\"","").
-                            replace("<KEY_PRESSED>,", "").
-                            replace("<KEY_RELEASED>,", "");
+                            replace(key_pressed_tag_2, "").
+                            replace(key_released_tag_2, "");
                         }
 
                         map[key1] = Key_action(action_ID,
@@ -130,17 +166,19 @@ class Key_event_to_string
          *         y is the key name without the "VK_" prefix.
          *
          */
+        @NonNls
+        @JvmStatic
         fun KeyboardShortcut.to_string(): String
         {
             val k: KeyboardShortcut = this;
 
-            val builder = StringBuilder("{\"K1\":");
+            val builder = StringBuilder(k1_tag);
 
             builder.append(get_keystroke_as_string(k.firstKeyStroke));
 
             if(k.secondKeyStroke != null)
             {
-                builder.append(",\"K2\":");
+                builder.append(k2_tag);
                 builder.append(get_keystroke_as_string(k.secondKeyStroke!!));
             }
 
@@ -155,6 +193,8 @@ class Key_event_to_string
          *         It will be in the form of [ID, MODIFIERS, VK_x(without the "VK_" prefix)].
          *
          */
+        @NonNls
+        @JvmStatic
         private fun get_keystroke_as_string( k: KeyStroke ): String
         {
             val builder = StringBuilder("[");
@@ -163,12 +203,12 @@ class Key_event_to_string
 
             when(ID)
             {
-                KeyEvent.KEY_PRESSED -> builder.append("\"<KEY_PRESSED>\"");
-                KeyEvent.KEY_TYPED -> builder.append("\"<KEY_TYPED>\"");
-                KeyEvent.KEY_RELEASED -> builder.append("\"<KEY_RELEASED>\"");
+                KeyEvent.KEY_PRESSED -> builder.append(key_pressed_tag_1);
+                KeyEvent.KEY_TYPED -> builder.append(key_typed_tag);
+                KeyEvent.KEY_RELEASED -> builder.append(key_released_tag_1);
                 else ->
                 {
-                    builder.append("\"<UNSUPPORTED>\"");
+                    builder.append(unsupported_tag_1);
                 }
             }
 
@@ -177,11 +217,11 @@ class Key_event_to_string
                 KeyEvent.KEY_PRESSED, KeyEvent.KEY_TYPED, KeyEvent.KEY_RELEASED ->
                 {
                     val modifiers = get_modifiers_as_string(k.modifiers and (KeyEvent.ALT_DOWN_MASK or KeyEvent.CTRL_DOWN_MASK or KeyEvent.SHIFT_DOWN_MASK));
-                    if(modifiers == null) builder.append(",\"<UNMODIFIED>\"") else builder.append(",\"$modifiers\"");
+                    if(modifiers == null) builder.append(unmodified_tag) else builder.append(",\"$modifiers\"");
                 }
                 else ->
                 {
-                    builder.append(",\"<UNSUPPORTED>\"");
+                    builder.append(unsupported_tag_2);
                 }
             }
 
@@ -205,12 +245,15 @@ class Key_event_to_string
             return builder.toString();
         }
 
+        @JvmStatic
         private fun get_modifiers_as_string(e: KeyEvent): String?
         {
             val modifiers = e.modifiersEx and (KeyEvent.ALT_DOWN_MASK or KeyEvent.CTRL_DOWN_MASK or KeyEvent.SHIFT_DOWN_MASK);
             return get_modifiers_as_string(modifiers);
         }
 
+        @NonNls
+        @JvmStatic
         private fun get_modifiers_as_string(modifiers: Int): String?
         {
             if(modifiers == 0) return null;
@@ -219,24 +262,25 @@ class Key_event_to_string
 
             if(modifiers and KeyEvent.ALT_DOWN_MASK != 0) result.append("<${
                 Toolkit.getProperty("AWT.alt",
-                                    "Alt")
+                                    alt_tag)
             }>");
             if(modifiers and KeyEvent.CTRL_DOWN_MASK != 0) result.append("<${
                 Toolkit.getProperty("AWT.control",
-                                    "Control")
+                                    control_tag)
             }>");
             if(modifiers and KeyEvent.META_DOWN_MASK != 0) result.append("<${
                 Toolkit.getProperty("AWT.meta",
-                                    "Meta")
+                                    meta_tag)
             }>");
             if(modifiers and KeyEvent.SHIFT_DOWN_MASK != 0) result.append("<${
                 Toolkit.getProperty("AWT.shift",
-                                    "Shift")
+                                    shift_tag)
             }>");
 
             return if(result.isNotEmpty()) result.toString() else null;
         }
 
+        @JvmStatic
         private fun get_key_name_as_string(e: KeyEvent): String
         {
             val key_text = KeyEvent.getKeyText(e.keyCode);
@@ -245,6 +289,7 @@ class Key_event_to_string
             return get_key_name_as_string(key_char,key_text);
         }
 
+        @JvmStatic
         private fun get_key_name_as_string(key_char: Char, key_text: String): String
         {
             return if((key_char == KeyEvent.CHAR_UNDEFINED) || (key_text.length > 1))

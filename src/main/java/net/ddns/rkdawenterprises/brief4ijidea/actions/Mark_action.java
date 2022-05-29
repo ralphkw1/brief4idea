@@ -4,8 +4,9 @@ package net.ddns.rkdawenterprises.brief4ijidea.actions;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import org.jetbrains.annotations.NotNull;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.toggle_marking_mode;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Mark_action
@@ -29,6 +30,6 @@ public class Mark_action
         Editor editor = e.getData( CommonDataKeys.EDITOR );
         if( editor == null ) return;
 
-        Actions_component.toggle_marking_mode( editor );
+        toggle_marking_mode( editor );
     }
 }

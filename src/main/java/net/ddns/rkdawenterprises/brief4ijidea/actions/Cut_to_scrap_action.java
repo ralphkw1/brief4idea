@@ -4,9 +4,11 @@ package net.ddns.rkdawenterprises.brief4ijidea.actions;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import net.ddns.rkdawenterprises.brief4ijidea.Column_marking_component;
 import org.jetbrains.annotations.NotNull;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Cut_to_scrap_action
@@ -31,12 +33,11 @@ public class Cut_to_scrap_action
 
         if( !Column_marking_component.is_column_marking_mode() )
         {
-            Actions_component.do_action( "EditorCut",
-                                         e );
+            do_action( "EditorCut", e );
 
             if( editor != null )
             {
-                Actions_component.stop_all_marking_modes( editor );
+                stop_all_marking_modes( editor );
             }
         }
         else
@@ -44,7 +45,7 @@ public class Cut_to_scrap_action
             if( editor != null )
             {
                 Column_marking_component.cut_to_scrap( editor );
-                Actions_component.stop_all_marking_modes( editor );
+                stop_all_marking_modes( editor );
             }
         }
     }

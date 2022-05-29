@@ -8,6 +8,10 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.ex.EditorEventMulticasterEx;
+import com.intellij.openapi.editor.ex.FocusChangeListener;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.keymap.Keymap;
 import com.intellij.openapi.keymap.KeymapManagerListener;
@@ -26,6 +30,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.Map;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.editor_gained_focus;
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.editor_lost_focus;
 
 /**
  * Supports storing the application settings in a persistent way. The {@link State} and {@link Storage} annotations
@@ -61,7 +68,7 @@ public class State_component
     @Override
     public Persisted_state getState()
     {
-        m_persisted_state.setVersion( 1 );
+        m_persisted_state.setVersion( 3 );
         return m_persisted_state;
     }
 
@@ -143,8 +150,6 @@ public class State_component
 
     private KeymapManagerListener m_keymap_manager_listener = null;
 
-    private User_focus_change_listener m_user_focus_change_listener = null;
-
     private void do_enable()
             throws IOException, ParserConfigurationException, SAXException
     {
@@ -188,10 +193,22 @@ public class State_component
         KeymapManagerEx.getInstanceEx()
                        .addWeakListener( m_keymap_manager_listener );
 
-        if( m_user_focus_change_listener == null )
-        {
-            m_user_focus_change_listener = new User_focus_change_listener( this );
-        }
+        ( (EditorEventMulticasterEx)( EditorFactory.getInstance()
+                                                   .getEventMulticaster() ) ).addFocusChangeListener( new FocusChangeListener()
+                                                                                                      {
+                                                                                                          @Override
+                                                                                                          public void focusGained( @NotNull Editor editor )
+                                                                                                          {
+                                                                                                              editor_gained_focus( editor );
+                                                                                                          }
+
+                                                                                                          @Override
+                                                                                                          public void focusLost( @NotNull Editor editor )
+                                                                                                          {
+                                                                                                              editor_lost_focus( editor );
+                                                                                                          }
+                                                                                                      },
+                                                                                                      this );
 
         status_bar_message( "Plugin enabled" );
     }
@@ -230,7 +247,15 @@ public class State_component
             do_disable();
         }
 
-        Status_bar_icon_factory.update_widgets();
+        Status_bar_icon_factory.update_widget();
+    }
+
+    public boolean get_show_icon_in_status_bar() { return m_persisted_state.getShow_icon_in_status_bar(); }
+
+    public void set_show_icon_in_status_bar( boolean show_icon_in_status_bar )
+    {
+        m_persisted_state.setShow_icon_in_status_bar( show_icon_in_status_bar );
+        Status_bar_icon_factory.update_widget();
     }
 
     public boolean get_paste_lines_at_home()
@@ -247,12 +272,6 @@ public class State_component
     {
         m_persisted_state.setUse_brief_home( use_brief_home );
     }
-
-    public boolean get_use_relative_bookmarks()
-    {
-        return m_persisted_state.getUse_relative_bookmarks();
-    }
-    public void set_use_relative_bookmarks( boolean use_relative_bookmarks ) { m_persisted_state.setUse_relative_bookmarks( use_relative_bookmarks ); }
 
     public boolean get_check_active_keymap_is_brief()
     {
@@ -271,6 +290,13 @@ public class State_component
 
     public boolean get_do_not_show_virtual_space_setting_dialog() { return m_persisted_state.getDo_not_show_virtual_space_setting_dialog(); }
     public void set_do_not_show_virtual_space_setting_dialog( boolean do_not_show_virtual_space_setting_dialog ) { m_persisted_state.setDo_not_show_virtual_space_setting_dialog( do_not_show_virtual_space_setting_dialog ); }
+
+    public boolean get_show_document_information() { return m_persisted_state.getShow_document_information(); }
+    public void set_show_document_information( boolean show_document_information )
+    {
+        m_persisted_state.setShow_document_information( show_document_information );
+        Status_bar_document_information_factory.update_widget();
+    }
 
     public static void status_bar_message( final String message )
     {
@@ -293,7 +319,7 @@ public class State_component
                 }
                 else
                 {
-                    bar.setInfo( "BRIEF: " + message );
+                    bar.setInfo( Messages.message( "status.bar.text.brief", message ) );
                 }
             }
         }

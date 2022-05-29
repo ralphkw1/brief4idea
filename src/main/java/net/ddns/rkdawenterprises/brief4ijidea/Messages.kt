@@ -1,4 +1,5 @@
 @file:Suppress("ClassName",
+               "HardCodedStringLiteral",
                "unused")
 
 package net.ddns.rkdawenterprises.brief4ijidea

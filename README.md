@@ -19,6 +19,7 @@
 ## Template ToDo list
 - [x] Create a new [IntelliJ Platform Plugin Template][template] project.
 - [ ] Get familiar with the [template documentation][template].
+- [ ] Update the about.html URL in code.
 - [ ] Verify the [pluginGroup](gradle.properties), [plugin ID](src/main/resources/META-INF/plugin.xml) and [sources package](src/main).
 - [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
 - [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
@@ -30,6 +31,7 @@
 ## Brief Text Editor Emulation and Keymap for Intellij IDEA
 This extension adds key bindings and functionality that attempts to emulate many features of the original BRIEF MS-DOS application. Adds it's home-home-home and end-end-end functionality, line and column marking modes, single key cut, copy, and paste, clipboard swap, as well as most of the original keybindings.
 <p>Some history. BRIEF (Basic Re-configurable Interactive Editing Facility) was a popular programmer's text editor in the late 1980s and early 1990s. Developed by UnderWare Inc, it was quite powerful and feature rich for its time. For more information, see the Wikipedia page &quot;<a href="https://en.wikipedia.org/wiki/Brief_(text_editor)" target="_blank">Brief (text editor)</a>&quot;.</p>
+<p>Note! Plugin will not activate until indexing is finished.</p>
 <!-- Plugin description end -->
 
 ---

@@ -10,7 +10,7 @@ import javax.swing.*;
 public class Application_configurable
         implements Configurable
 {
-    private Settings_UI_component m_settings_component;
+    private Settings_UI_component m_settings_ui_component;
 
     /**
      * Returns the visible name of the configurable component. Note, that this method must return the display name that
@@ -21,7 +21,7 @@ public class Application_configurable
     @Override
     public @NlsContexts.ConfigurableName String getDisplayName()
     {
-        return "Brief Editor Emulation Settings";
+        return Messages.message( "configurable.name.brief.editor.emulation.settings" );
     }
 
     /**
@@ -30,7 +30,7 @@ public class Application_configurable
     @Override
     public @Nullable JComponent getPreferredFocusedComponent()
     {
-        return m_settings_component.getPreferredFocusedComponent();
+        return m_settings_ui_component.getPreferredFocusedComponent();
     }
 
     /**
@@ -46,8 +46,8 @@ public class Application_configurable
     @Override
     public @Nullable JComponent createComponent()
     {
-        m_settings_component = new Settings_UI_component();
-        return m_settings_component.getPanel();
+        m_settings_ui_component = new Settings_UI_component();
+        return m_settings_ui_component.getPanel();
     }
 
     /**
@@ -61,14 +61,15 @@ public class Application_configurable
     {
         State_component state_component = State_component.get_instance();
         boolean modified = false;
-        modified |= m_settings_component.get_enabled() != state_component.get_enabled();
-        modified |= m_settings_component.get_paste_lines_at_home() != state_component.get_paste_lines_at_home();
-        modified |= m_settings_component.get_use_brief_home() != state_component.get_use_brief_home();
-        modified |= m_settings_component.get_use_relative_bookmarks() != state_component.get_use_relative_bookmarks();
-        modified |= m_settings_component.get_check_active_keymap_is_brief() != state_component.get_check_active_keymap_is_brief();
-        modified |= m_settings_component.get_exit_only_closes_editor() != state_component.get_exit_only_closes_editor();
-        modified |= m_settings_component.get_write_all_and_exit_closes_IDEA() != state_component.get_write_all_and_exit_closes_IDEA();
-        modified |= m_settings_component.get_do_not_show_virtual_space_setting_dialog() != state_component.get_do_not_show_virtual_space_setting_dialog();
+        modified |= m_settings_ui_component.get_enabled() != state_component.get_enabled();
+        modified |= m_settings_ui_component.get_show_icon_in_status_bar() != state_component.get_show_icon_in_status_bar();
+        modified |= m_settings_ui_component.get_paste_lines_at_home() != state_component.get_paste_lines_at_home();
+        modified |= m_settings_ui_component.get_use_brief_home() != state_component.get_use_brief_home();
+        modified |= m_settings_ui_component.get_check_active_keymap_is_brief() != state_component.get_check_active_keymap_is_brief();
+        modified |= m_settings_ui_component.get_exit_only_closes_editor() != state_component.get_exit_only_closes_editor();
+        modified |= m_settings_ui_component.get_write_all_and_exit_closes_IDEA() != state_component.get_write_all_and_exit_closes_IDEA();
+        modified |= m_settings_ui_component.get_do_not_show_virtual_space_setting_dialog() != state_component.get_do_not_show_virtual_space_setting_dialog();
+        modified |= m_settings_ui_component.get_show_document_information() != state_component.get_show_document_information();
         return modified;
     }
 
@@ -83,15 +84,16 @@ public class Application_configurable
             throws ConfigurationException
     {
         State_component state_component = State_component.get_instance();
-        try { state_component.set_enabled( m_settings_component.get_enabled() ); }
+        try { state_component.set_enabled( m_settings_ui_component.get_enabled() ); }
         catch( Exception exception ) { System.out.println( "brief4ijidea.Application_configurable.apply: " + exception.getLocalizedMessage() ); }
-        state_component.set_paste_lines_at_home( m_settings_component.get_paste_lines_at_home() );
-        state_component.set_use_brief_home( m_settings_component.get_use_brief_home() );
-        state_component.set_use_relative_bookmarks( m_settings_component.get_use_relative_bookmarks() );
-        state_component.set_check_active_keymap_is_brief( m_settings_component.get_check_active_keymap_is_brief() );
-        state_component.set_exit_only_closes_editor( m_settings_component.get_exit_only_closes_editor() );
-        state_component.set_write_all_and_exit_closes_IDEA( m_settings_component.get_write_all_and_exit_closes_IDEA() );
-        state_component.set_do_not_show_virtual_space_setting_dialog( m_settings_component.get_do_not_show_virtual_space_setting_dialog() );
+        state_component.set_show_icon_in_status_bar( m_settings_ui_component.get_show_icon_in_status_bar() );
+        state_component.set_paste_lines_at_home( m_settings_ui_component.get_paste_lines_at_home() );
+        state_component.set_use_brief_home( m_settings_ui_component.get_use_brief_home() );
+        state_component.set_check_active_keymap_is_brief( m_settings_ui_component.get_check_active_keymap_is_brief() );
+        state_component.set_exit_only_closes_editor( m_settings_ui_component.get_exit_only_closes_editor() );
+        state_component.set_write_all_and_exit_closes_IDEA( m_settings_ui_component.get_write_all_and_exit_closes_IDEA() );
+        state_component.set_do_not_show_virtual_space_setting_dialog( m_settings_ui_component.get_do_not_show_virtual_space_setting_dialog() );
+        state_component.set_show_document_information( m_settings_ui_component.get_show_document_information() );
     }
 
     /**
@@ -102,14 +104,15 @@ public class Application_configurable
     public void reset()
     {
         State_component state_component = State_component.get_instance();
-        m_settings_component.set_enabled( state_component.get_enabled() );
-        m_settings_component.set_paste_lines_at_home( state_component.get_paste_lines_at_home() );
-        m_settings_component.set_use_brief_home( state_component.get_use_brief_home() );
-        m_settings_component.set_use_relative_bookmarks( state_component.get_use_relative_bookmarks() );
-        m_settings_component.set_check_active_keymap_is_brief( state_component.get_check_active_keymap_is_brief() );
-        m_settings_component.set_exit_only_closes_editor( state_component.get_exit_only_closes_editor() );
-        m_settings_component.set_write_all_and_exit_closes_IDEA( state_component.get_write_all_and_exit_closes_IDEA() );
-        m_settings_component.set_do_not_show_virtual_space_setting_dialog( state_component.get_do_not_show_virtual_space_setting_dialog() );
+        m_settings_ui_component.set_enabled( state_component.get_enabled() );
+        m_settings_ui_component.set_show_icon_in_status_bar( state_component.get_show_icon_in_status_bar() );
+        m_settings_ui_component.set_paste_lines_at_home( state_component.get_paste_lines_at_home() );
+        m_settings_ui_component.set_use_brief_home( state_component.get_use_brief_home() );
+        m_settings_ui_component.set_check_active_keymap_is_brief( state_component.get_check_active_keymap_is_brief() );
+        m_settings_ui_component.set_exit_only_closes_editor( state_component.get_exit_only_closes_editor() );
+        m_settings_ui_component.set_write_all_and_exit_closes_IDEA( state_component.get_write_all_and_exit_closes_IDEA() );
+        m_settings_ui_component.set_do_not_show_virtual_space_setting_dialog( state_component.get_do_not_show_virtual_space_setting_dialog() );
+        m_settings_ui_component.set_show_document_information( state_component.get_show_document_information() );
     }
 
     /**
@@ -119,7 +122,7 @@ public class Application_configurable
     @Override
     public void disposeUIResources()
     {
-        m_settings_component.dispose();
-        m_settings_component = null;
+        m_settings_ui_component.dispose();
+        m_settings_ui_component = null;
     }
 }

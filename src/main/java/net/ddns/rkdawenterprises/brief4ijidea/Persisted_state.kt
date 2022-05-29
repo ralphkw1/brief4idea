@@ -4,11 +4,17 @@ package net.ddns.rkdawenterprises.brief4ijidea
 
 data class Persisted_state
 (
-    var version: Int = 1,
+    var version: Int = 3,
+
     /**
-     * Enables or disables the Brief Emulator functionality.
+     * Enables or disables the Brief Emulator functionality. Uncheck to disable the plugin.
      */
     var enabled: Boolean = true,
+
+    /**
+     * Shows or hides the plugin widget/icon in the Status Bar. Uncheck to hide the status bar icon.
+     */
+    var show_icon_in_status_bar: Boolean = true,
 
     /**
      * If the item in the scrap history buffer being pasted is a full line (ends with a line termination), then paste it
@@ -21,12 +27,6 @@ data class Persisted_state
      * to restore "smart" home key functionality, but still maintain Brief "home-home-home" key functionality.
      */
     var use_brief_home: Boolean = true,
-
-    /**
-     * Bookmark URI are stored and displayed relative to project workspace folder. Uncheck to store and display
-     * globally. Changing this configuration may delete existing stored bookmarks.
-     */
-    var use_relative_bookmarks: Boolean = true,
 
     /**
      * The name of the keymap before changing it to Brief, so it can be restored
@@ -57,5 +57,11 @@ data class Persisted_state
      * Disables showing of the virtual space setting dialog again when initiating the "Right side of window" action.
      * Uncheck if you want to see this dialog again.
      */
-    var do_not_show_virtual_space_setting_dialog: Boolean = false
+    var do_not_show_virtual_space_setting_dialog: Boolean = false,
+
+    /**
+     * Shows additional document information (offsets, lengths) in the status bar.
+     * Uncheck if you don't want to see extra document information in the status bar.
+     */
+    var show_document_information: Boolean = false
 )

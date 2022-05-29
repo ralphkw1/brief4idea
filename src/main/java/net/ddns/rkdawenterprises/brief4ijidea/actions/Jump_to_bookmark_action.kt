@@ -7,7 +7,7 @@
 package net.ddns.rkdawenterprises.brief4ijidea.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component
+import net.ddns.rkdawenterprises.brief4ijidea.do_action
 
 open class Jump_to_bookmark_action(private val type: Int,
                                    text: String? = null,
@@ -23,26 +23,16 @@ open class Jump_to_bookmark_action(private val type: Int,
     {
         when(type)
         {
-            0 -> Actions_component.do_action("GotoBookmark0",
-                                                                e);
-            1 -> Actions_component.do_action("GotoBookmark1",
-                                                                e);
-            2 -> Actions_component.do_action("GotoBookmark2",
-                                                                e);
-            3 -> Actions_component.do_action("GotoBookmark3",
-                                                                e);
-            4 -> Actions_component.do_action("GotoBookmark4",
-                                                                e);
-            5 -> Actions_component.do_action("GotoBookmark5",
-                                                                e);
-            6 -> Actions_component.do_action("GotoBookmark6",
-                                                                e);
-            7 -> Actions_component.do_action("GotoBookmark7",
-                                                                e);
-            8 -> Actions_component.do_action("GotoBookmark8",
-                                                                e);
-            9 -> Actions_component.do_action("GotoBookmark9",
-                                                                e);
+            0 -> do_action("GotoBookmark0", e);
+            1 -> do_action("GotoBookmark1", e);
+            2 -> do_action("GotoBookmark2", e);
+            3 -> do_action("GotoBookmark3", e);
+            4 -> do_action("GotoBookmark4", e);
+            5 -> do_action("GotoBookmark5", e);
+            6 -> do_action("GotoBookmark6", e);
+            7 -> do_action("GotoBookmark7", e);
+            8 -> do_action("GotoBookmark8", e);
+            9 -> do_action("GotoBookmark9", e);
             else -> return;
         }
     }

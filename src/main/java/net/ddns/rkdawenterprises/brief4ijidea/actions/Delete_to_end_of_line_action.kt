@@ -7,7 +7,7 @@
 package net.ddns.rkdawenterprises.brief4ijidea.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component
+import net.ddns.rkdawenterprises.brief4ijidea.do_action
 
 class Delete_to_end_of_line_action(text: String?,
                                    description: String?) : Plugin_action(text,
@@ -20,7 +20,6 @@ class Delete_to_end_of_line_action(text: String?,
      */
     override fun actionPerformed(e: AnActionEvent)
     {
-        Actions_component.do_action("EditorDeleteToLineEnd",
-                                    e);
+        do_action("EditorDeleteToLineEnd", e);
     }
 }

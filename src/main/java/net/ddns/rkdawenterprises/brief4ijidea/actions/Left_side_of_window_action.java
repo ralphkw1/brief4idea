@@ -5,10 +5,11 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.editor.impl.EditorImpl;
-import net.ddns.rkdawenterprises.brief4ijidea.Miscellaneous;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.get_editor_content_visible_area;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Left_side_of_window_action
@@ -32,7 +33,7 @@ public class Left_side_of_window_action
         Editor editor = e.getData( CommonDataKeys.EDITOR );
         if( !( editor instanceof EditorImpl ) ) return;
 
-        Rectangle visible_area = Miscellaneous.get_editor_content_visible_area( editor );
+        Rectangle visible_area = get_editor_content_visible_area( editor );
 
         Point cursor_point = editor.visualPositionToXY( editor.getCaretModel()
                                                               .getVisualPosition() );

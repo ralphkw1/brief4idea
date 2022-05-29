@@ -5,10 +5,12 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.editor.impl.EditorImpl;
-import net.ddns.rkdawenterprises.brief4ijidea.Miscellaneous;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.get_editor_content_visible_area;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.virtual_space_setting_warning;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Right_side_of_window_action
@@ -32,9 +34,9 @@ public class Right_side_of_window_action
         Editor editor = e.getData( CommonDataKeys.EDITOR );
         if( !( editor instanceof EditorImpl ) ) return;
 
-        Miscellaneous.virtual_space_setting_warning( editor );
+        virtual_space_setting_warning( editor );
 
-        Rectangle visible_area = Miscellaneous.get_editor_content_visible_area( editor );
+        Rectangle visible_area = get_editor_content_visible_area( editor );
 
         int max_X = visible_area.x + visible_area.width - ( (EditorImpl)editor ).getScrollPane()
                                                                                 .getVerticalScrollBar()

@@ -3,14 +3,13 @@
 
 package net.ddns.rkdawenterprises.brief4ijidea.actions
 
-import com.intellij.openapi.project.DumbAwareToggleAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.DumbAwareToggleAction
 import net.ddns.rkdawenterprises.brief4ijidea.Messages
 import net.ddns.rkdawenterprises.brief4ijidea.State_component
-import java.lang.Exception
 
-class Enabled_toggle_action : DumbAwareToggleAction(Messages.message("Enabled_toggle_action.text"),
-                                                    Messages.message("Enabled_toggle_action.description"),
+class Enabled_toggle_action : DumbAwareToggleAction(Messages.message("action.brief.editor.emulator.text"),
+                                                    Messages.message("action.enable.or.disable.brief.editor.emulation.plugin.description"),
                                                     null)
 {
     /**

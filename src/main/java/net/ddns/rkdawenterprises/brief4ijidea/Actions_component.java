@@ -1,17 +1,14 @@
 package net.ddns.rkdawenterprises.brief4ijidea;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.actionSystem.ex.ActionManagerEx;
-import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.actionSystem.impl.ActionManagerImpl;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.intellij.openapi.keymap.impl.DefaultKeymap;
 import com.intellij.openapi.keymap.impl.KeymapImpl;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.*;
@@ -25,12 +22,14 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-@SuppressWarnings("unused")
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.capitalize_character_at_index;
+
+@SuppressWarnings({ "unused", "CommentedOutCode" })
 public class Actions_component
 {
     private Actions_component() { }
 
-    private static Map<String, Keymap_action_data> s_keymap_file_parsed;
+    private static Map<String, Keymap_action_data> s_keymap_file_parsed = null;
 
     public static @NotNull String setup_actions()
             throws IOException, ParserConfigurationException, SAXException
@@ -48,15 +47,13 @@ public class Actions_component
         if( State_component.get_instance()
                            .get_check_active_keymap_is_brief() )
         {
-            final KeymapImpl brief_keymap = (KeymapImpl)keymap_manager.getKeymap( "Brief" );
+            final KeymapImpl brief_keymap = (KeymapImpl)keymap_manager.getKeymap( Messages.message( "brief" ) );
             if( brief_keymap != null )
             {
                 brief_keymap.setCanModify( true );
                 keymap_manager.setActiveKeymap( brief_keymap );
-//                fix_keymap_conflicts( s_keymap_file_parsed,
-//                                      brief_keymap );
 
-                State_component.status_bar_message( "Keymap set to Brief" );
+                State_component.status_bar_message( Messages.message( "keymap.set.to.brief" ) );
             }
             else
             {
@@ -76,7 +73,7 @@ public class Actions_component
 
             KeymapImpl default_keymap;
 
-            if( ( previous_keymap_name == null ) || previous_keymap_name.equals( "Brief" ) )
+            if( ( previous_keymap_name == null ) || previous_keymap_name.equals( Messages.message( "brief" ) ) )
             {
                 default_keymap = (KeymapImpl)keymap_manager.getKeymap( DefaultKeymap.getInstance()
                                                                                     .getDefaultKeymapName() );
@@ -89,41 +86,11 @@ public class Actions_component
             if( default_keymap != null )
             {
                 keymap_manager.setActiveKeymap( default_keymap );
-                State_component.status_bar_message( "Keymap restored to " + default_keymap.getName() );
+                State_component.status_bar_message( Messages.message( "keymap.restored.to.0", default_keymap.getName() ) );
             }
         }
 
         remove_actions( s_keymap_file_parsed );
-    }
-
-    private static void fix_keymap_conflicts( @NotNull Map<String, Keymap_action_data> keymap_file,
-                                              @NotNull KeymapImpl brief_keymap )
-    {
-        for( Map.Entry<String, Keymap_action_data> keymap_file_entry : keymap_file.entrySet() )
-        {
-            String action_ID = keymap_file_entry.getKey();
-            Keymap_action_data keymap_action = keymap_file_entry.getValue();
-            for( KeyboardShortcut keyboard_shortcut : keymap_action.getShortcuts() )
-            {
-                final Map<String, ? extends List<KeyboardShortcut>> conflicts =
-                        brief_keymap.getConflicts( "",
-                                                   keyboard_shortcut );
-
-                for( Map.Entry<String, ? extends List<KeyboardShortcut>> keymap_file_conflict : conflicts.entrySet() )
-                {
-                    if( keymap_file_conflict.getKey()
-                                            .equals( action_ID ) ) continue;
-
-                    List<KeyboardShortcut> keyboard_shortcut_conflicts =
-                            keymap_file_conflict.getValue();
-                    for( KeyboardShortcut keyboard_shortcut_conflict : keyboard_shortcut_conflicts )
-                    {
-                        brief_keymap.removeShortcut( keymap_file_conflict.getKey(),
-                                                     keyboard_shortcut_conflict );
-                    }
-                }
-            }
-        }
     }
 
     public static Iterable<Node> iterable( @NotNull final NodeList node_list )
@@ -148,10 +115,10 @@ public class Actions_component
         };
     }
 
-    public final static String s_documentation_key = "Documentation URI: ";
+    public final static @NonNls String s_documentation_key = "Documentation URI: ";
     public static String m_documentation_URI;
 
-    public static @NotNull Map<String, Keymap_action_data> parse_keymap_file( @NotNull String path )
+    public static @NotNull @NonNls Map<String, Keymap_action_data> parse_keymap_file( @NotNull String path )
             throws IOException, ParserConfigurationException, SAXException
     {
         try( InputStream input_stream =
@@ -167,7 +134,7 @@ public class Actions_component
 
             final Node keymap_node = document.getElementsByTagName( "keymap" )
                                              .item( 0 );
-            String last_comment_text = "N/A";
+            @NonNls String last_comment_text = "N/A";
             for( Node node : iterable( keymap_node.getChildNodes() ) )
             {
                 if( node != null )
@@ -188,7 +155,7 @@ public class Actions_component
                     {
                         String[] action_text = parse_action_text( last_comment_text );
 
-                        Element action_element = (Element)node;
+                        @NonNls Element action_element = (Element)node;
                         if( !action_element.getNodeName()
                                            .equals( "action" ) ) continue;
                         String action_ID = action_element.getAttribute( "id" );
@@ -228,10 +195,10 @@ public class Actions_component
         }
     }
 
-    public static final String s_command_key_string = "Command:";
-    public static final String s_description_key_string = "Description:";
+    public static final @NonNls String s_command_key_string = "Command:";
+    public static final @NonNls String s_description_key_string = "Description:";
 
-    private static String[] parse_action_text( @Nullable String text )
+    private static @NonNls String[] parse_action_text( @Nullable String text )
     {
         if( text == null ) return null;
 
@@ -279,7 +246,7 @@ public class Actions_component
 
         for( Map.Entry<String, Keymap_action_data> keymap_file_entry : keymap_file.entrySet() )
         {
-            String action_ID = keymap_file_entry.getKey();
+            @NonNls String action_ID = keymap_file_entry.getKey();
             if( action_ID.startsWith( "net.ddns.rkdawenterprises.brief4ijidea.actions." ) )
             {
                 String text = keymap_file_entry.getValue()
@@ -309,17 +276,6 @@ public class Actions_component
         }
     }
 
-    public static String capitalize_character_at_index( @NotNull String string,
-                                                        int index )
-    {
-        return string.substring( 0,
-                                 index ) +
-                string.substring( index,
-                                  index + 1 )
-                      .toUpperCase() +
-                string.substring( index + 1 );
-    }
-
     private static void remove_actions( @NotNull Map<String, Keymap_action_data> keymap_file )
     {
         ActionManagerEx action_manager_ex = ActionManagerImpl.getInstanceEx();
@@ -332,97 +288,5 @@ public class Actions_component
                 action_manager_ex.unregisterAction( action_ID );
             }
         }
-    }
-
-    public static void do_action( @NotNull String action_ID,
-                                  @NotNull AnActionEvent an_action_event )
-    {
-        ActionManagerEx action_manager_ex = ActionManagerImpl.getInstanceEx();
-        AnAction action = action_manager_ex.getAction( action_ID );
-        ActionUtil.performActionDumbAwareWithCallbacks( action,
-                                                        an_action_event,
-                                                        an_action_event.getDataContext() );
-    }
-
-    public static boolean has_selection( @NotNull Editor editor )
-    {
-        return editor.getSelectionModel()
-                     .hasSelection();
-    }
-
-    public static void stop_all_marking_modes( @NotNull Editor editor,
-                                               boolean remove_selection )
-    {
-        Marking_component.stop_marking_mode( editor,
-                                             remove_selection );
-        Line_marking_component.stop_line_marking_mode( editor,
-                                                       remove_selection );
-        Column_marking_component.stop_column_marking_mode( editor,
-                                                           remove_selection );
-
-        State_component.status_bar_message( null );
-
-        if( remove_selection )
-        {
-            if( has_selection( editor ) )
-            {
-                editor.getCaretModel()
-                      .removeSecondaryCarets();
-                editor.getSelectionModel()
-                      .removeSelection();
-            }
-        }
-    }
-
-    public static void stop_all_marking_modes( @NotNull Editor editor )
-    {
-        stop_all_marking_modes( editor,
-                                true );
-    }
-
-    public static LogicalPosition validate_position( @NotNull Editor editor,
-                                                     @NotNull LogicalPosition position )
-    {
-        return editor.offsetToLogicalPosition( editor.logicalPositionToOffset( position ) );
-    }
-
-    public static void editor_gained_focus( @NotNull Editor editor )
-    {
-        stop_all_marking_modes( editor, false );
-    }
-
-    public static void editor_lost_focus( @NotNull Editor editor )
-    {
-        stop_all_marking_modes( editor, false );
-    }
-
-    public static void toggle_marking_mode( @NotNull Editor editor )
-    {
-        Line_marking_component.stop_line_marking_mode( editor,
-                                                       true );
-        Column_marking_component.stop_column_marking_mode( editor,
-                                                           true );
-
-        Marking_component.toggle_marking_mode( editor );
-    }
-
-    public static void toggle_line_marking_mode( @NotNull Editor editor )
-    {
-        Marking_component.stop_marking_mode( editor,
-                                             true );
-        Column_marking_component.stop_column_marking_mode( editor,
-                                                           true );
-
-        Line_marking_component.toggle_line_marking_mode( editor );
-    }
-
-    public static void toggle_column_marking_mode( @NotNull Editor editor )
-    {
-        Marking_component.stop_marking_mode( editor,
-                                             true );
-        Line_marking_component.stop_line_marking_mode( editor,
-                                                       true );
-
-        Column_marking_component.toggle_column_marking_mode( editor );
     }
 }

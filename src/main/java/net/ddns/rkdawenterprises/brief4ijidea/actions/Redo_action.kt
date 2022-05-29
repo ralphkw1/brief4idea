@@ -7,7 +7,12 @@
 package net.ddns.rkdawenterprises.brief4ijidea.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.command.undo.UndoManager
+import net.ddns.rkdawenterprises.brief4ijidea.do_action
+import net.ddns.rkdawenterprises.brief4ijidea.get_undo_manager
 
 class Redo_action(text: String?,
                   description: String?) : Plugin_action(text,
@@ -20,7 +25,16 @@ class Redo_action(text: String?,
      */
     override fun actionPerformed(e: AnActionEvent)
     {
-        Actions_component.do_action("\$Redo",
-                                    e);
+        val dataContext: DataContext = e.dataContext
+        val editor = PlatformDataKeys.FILE_EDITOR.getData(dataContext)
+        val project = CommonDataKeys.PROJECT.getData(dataContext)
+        val undoManager: UndoManager = get_undo_manager(project,
+                                                        dataContext)
+        if(undoManager.isRedoAvailable(editor))
+        {
+            do_action("\$Redo",
+                      e,
+                      this);
+        }
     }
 }

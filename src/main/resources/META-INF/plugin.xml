@@ -19,10 +19,10 @@
 
         <applicationConfigurable parentId="editor"
                                  instance="net.ddns.rkdawenterprises.brief4ijidea.Application_configurable"
-                                 id="net.ddns.rkdawenterprises.brief4ijidea.Application_configurable"
-                                 displayName="Brief Editor Emulation"/>
+                                 id="net.ddns.rkdawenterprises.brief4ijidea.Application_configurable"/>
 
         <statusBarWidgetFactory implementation="net.ddns.rkdawenterprises.brief4ijidea.Status_bar_icon_factory"/>
+        <statusBarWidgetFactory implementation="net.ddns.rkdawenterprises.brief4ijidea.Status_bar_document_information_factory"/>
 
         <bundledKeymap file="Brief.xml"/>
 

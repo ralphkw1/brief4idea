@@ -10,7 +10,8 @@ package net.ddns.rkdawenterprises.brief4ijidea.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import net.ddns.rkdawenterprises.brief4ijidea.Miscellaneous
+import net.ddns.rkdawenterprises.brief4ijidea.get_editor_content_visible_area
+import net.ddns.rkdawenterprises.brief4ijidea.scroll_lines
 
 class Line_to_top_of_window_action(text: String? = null,
                                    description: String? = null) : Plugin_action(text,
@@ -30,7 +31,7 @@ class Line_to_top_of_window_action(text: String? = null,
     {
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return;
 
-        val visible_area = Miscellaneous.get_editor_content_visible_area(editor);
+        val visible_area = get_editor_content_visible_area(editor);
         var visible_area_top_line_number = editor.yToVisualLine(visible_area.y);
         if(visible_area.y > editor.visualLineToY(visible_area_top_line_number) &&
             visible_area.y + visible_area.height > editor.visualLineToY(visible_area_top_line_number + 1)
@@ -43,7 +44,6 @@ class Line_to_top_of_window_action(text: String? = null,
             .visualPosition;
         val lines_to_top_of_window = caret_position_visual.line - visible_area_top_line_number;
 
-        Miscellaneous.scroll_lines(editor,
-                                   -lines_to_top_of_window);
+        scroll_lines(editor, -lines_to_top_of_window);
     }
 }

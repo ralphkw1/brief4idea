@@ -10,13 +10,14 @@ import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl;
 import com.intellij.psi.PsiFile;
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import net.ddns.rkdawenterprises.brief4ijidea.State_component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Exit_action
@@ -56,23 +57,23 @@ public class Exit_action
 
         if( is_modified )
         {
-            if( Messages.showYesNoDialog( "Write changes to \"" + ( file_name != null ? file_name : "file" ) +
-                                                  "\" before closing, if you want them externally accessible.",
-                                          "Write Changes?",
+            String message_file_name = ( file_name != null ? file_name : net.ddns.rkdawenterprises.brief4ijidea.Messages.message( "dialog.message.file" ) );
+            if( Messages.showYesNoDialog( net.ddns.rkdawenterprises.brief4ijidea.Messages.message( "dialog.message.write.changes.to.before.closing.if.you.want.them.externally.accessible", message_file_name ),
+                                          net.ddns.rkdawenterprises.brief4ijidea.Messages.message("dialog.title.write.changes"),
                                           Messages.getQuestionIcon() ) == Messages.YES )
             {
-                Actions_component.do_action( "SaveDocument", e );
+                do_action( "SaveDocument", e );
             }
         }
 
         if( State_component.get_instance()
                            .get_exit_only_closes_editor() )
         {
-            Actions_component.do_action( "CloseEditor", e );
+            do_action( "CloseEditor", e );
         }
         else
         {
-            Actions_component.do_action( "Exit", e );
+            do_action( "Exit", e );
         }
     }
 

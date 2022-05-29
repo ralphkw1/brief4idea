@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.StatusBarWidgetFactory;
@@ -32,11 +31,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+@SuppressWarnings("JavadocReference")
 public class Status_bar_icon_factory
         implements StatusBarWidgetFactory
 {
-    public static final String ID = "Brief4ijidea_status_bar_icon_factory_ID";
-    public static final String DISPLAY_NAME = "Brief for IJ IDEA";
+    public static final @NonNls String ID = "Brief4ijidea_status_bar_brief_for_ij_idea_factory_ID";
+    public static final String DISPLAY_NAME = Messages.message( "brief.for.ij.idea" );
 
     /**
      * @return Widget identifier. Used to store visibility settings.
@@ -73,12 +73,13 @@ public class Status_bar_icon_factory
      * Whenever availability is changed, you need to call {@link StatusBarWidgetsManager#updateWidget(StatusBarWidgetFactory)}
      * explicitly to get status bar updated.
      *
-     * @param project
+     * @param project Project
      */
     @Override
     public boolean isAvailable( @NotNull Project project )
     {
-        return true;
+        return State_component.get_instance()
+                              .get_show_icon_in_status_bar();
     }
 
     /**
@@ -95,7 +96,7 @@ public class Status_bar_icon_factory
      * To do this, you need to explicitly invoke {@link StatusBarWidgetsManager#updateWidget(StatusBarWidgetFactory)}
      * to recreate the widget and re-add it to the status bar.
      *
-     * @param project
+     * @param project Project
      */
     @Override
     public @NotNull StatusBarWidget createWidget( @NotNull Project project )
@@ -107,7 +108,7 @@ public class Status_bar_icon_factory
     public void disposeWidget( @NotNull StatusBarWidget widget ) {}
 
     /**
-     * @param statusBar
+     * @param statusBar StatusBar
      *
      * @return Returns whether the widget can be enabled on the given status bar right now. Status bar's context menu
      * with enable/disable action depends on the result of this method.
@@ -148,31 +149,27 @@ public class Status_bar_icon_factory
         return true;
     }
 
-    public static void update_widgets()
+    public static void update_widget()
     {
         ProjectManager project_manager = ProjectManager.getInstanceIfCreated();
         if( project_manager == null ) return;
 
+        StatusBarWidgetFactory status_bar_widget_factory = StatusBarWidgetFactory.EP_NAME.findExtension( Status_bar_icon_factory.class );
+        if( status_bar_widget_factory == null ) return;
+
         for( Project project : project_manager.getOpenProjects() )
         {
-            StatusBar status_bar = WindowManager.getInstance()
-                                                .getStatusBar( project );
-            if( status_bar == null ) continue;
-
-            StatusBarWidget status_bar_widget = status_bar.getWidget( ID );
-            if( status_bar_widget != null )
-            {
-                status_bar.updateWidget( ID );
-            }
-
             StatusBarWidgetsManager status_bar_widgets_manager = project.getService( StatusBarWidgetsManager.class );
             if( status_bar_widgets_manager != null )
             {
-                StatusBarWidgetFactory status_bar_icon_factory = status_bar_widgets_manager.findWidgetFactory( ID );
-                if( status_bar_icon_factory != null )
-                {
-                    status_bar_widgets_manager.updateWidget( status_bar_icon_factory );
-                }
+                status_bar_widgets_manager.updateWidget( status_bar_widget_factory );
+            }
+
+            StatusBar status_bar = WindowManager.getInstance()
+                                                .getStatusBar( project );
+            if( status_bar != null )
+            {
+                status_bar.updateWidget( ID );
             }
         }
     }
@@ -197,7 +194,7 @@ public class Status_bar_icon_factory
     private static class Browse_link_action
             extends DumbAwareAction
     {
-        private String m_URI;
+        private final String m_URI;
 
         public Browse_link_action( String text,
                                    String a_URI,
@@ -219,7 +216,7 @@ public class Status_bar_icon_factory
     private static class Status_bar_widget
             implements StatusBarWidget, StatusBarWidget.IconPresentation
     {
-        private Project m_project;
+        private final Project m_project;
 
         public Status_bar_widget( @NotNull Project project )
         {
@@ -266,9 +263,9 @@ public class Status_bar_icon_factory
         }
 
         @Override
-        public @Nullable @NlsContexts.Tooltip String getTooltipText()
+        public @Nullable String getTooltipText()
         {
-            return DISPLAY_NAME + " in " + m_project.getName();
+            return Messages.message( "tooltip.in", DISPLAY_NAME, m_project.getName() );
         }
 
         @Override

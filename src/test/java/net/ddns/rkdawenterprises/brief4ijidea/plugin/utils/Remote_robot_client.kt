@@ -83,11 +83,6 @@ class Remote_robot_client : AfterTestExecutionCallback, ParameterResolver
         }
     }
 
-    private fun saveScreenshot(testName: String)
-    {
-        fetchScreenShot().save(testName)
-    }
-
     private fun saveHierarchy(testName: String)
     {
         val hierarchySnapshot =
@@ -170,30 +165,6 @@ class Remote_robot_client : AfterTestExecutionCallback, ParameterResolver
                         ImageIO.read(it)
                     }
                     .save(testName + "_" + n)
-            }
-    }
-
-    private fun fetchScreenShot(): BufferedImage
-    {
-        return remoteRobot.callJs<ByteArray>(
-            """
-            importPackage(java.io)
-            importPackage(javax.imageio)
-            const screenShot = new java.awt.Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-            let pictureBytes;
-            const baos = new ByteArrayOutputStream();
-            try {
-                ImageIO.write(screenShot, "png", baos);
-                pictureBytes = baos.toByteArray();
-            } finally {
-              baos.close();
-            }
-            pictureBytes;
-        """
-                                            )
-            .inputStream()
-            .use {
-                ImageIO.read(it)
             }
     }
 }

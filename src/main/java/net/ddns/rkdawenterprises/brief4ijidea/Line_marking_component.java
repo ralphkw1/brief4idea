@@ -18,13 +18,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.validate_position;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
+
 @SuppressWarnings({ "UnnecessaryReturnStatement", "UnnecessaryLocalVariable" })
 public class Line_marking_component
 {
     private static boolean s_is_line_marking_mode = false;
     private static LogicalPosition s_line_selection_origin = null;
 
-    public static boolean is_line_marking_mode() { return s_is_line_marking_mode; };
+    public static boolean is_line_marking_mode() { return s_is_line_marking_mode; }
 
     @SuppressWarnings("UnusedReturnValue")
     public static boolean toggle_line_marking_mode( @NotNull Editor editor )
@@ -77,7 +80,7 @@ public class Line_marking_component
 
         if( remove_selection )
         {
-            if( Actions_component.has_selection( editor ) )
+            if( has_selection( editor ) )
             {
                 editor.getCaretModel()
                       .removeSecondaryCarets();
@@ -297,9 +300,9 @@ public class Line_marking_component
         if( caret_logical_position.compareTo( s_line_selection_origin ) < 0 )
         {
             LogicalPosition start = caret_logical_position;
-            LogicalPosition end = Actions_component.validate_position( editor,
-                                                                       new LogicalPosition( s_line_selection_origin.line + 1,
-                                                                                            0 ) );
+            LogicalPosition end = validate_position( editor,
+                                                     new LogicalPosition( s_line_selection_origin.line + 1,
+                                                                          0 ) );
             editor.getCaretModel()
                   .getCurrentCaret()
                   .setSelection( editor.logicalPositionToOffset( start ),
@@ -310,9 +313,9 @@ public class Line_marking_component
         if( caret_logical_position.compareTo( s_line_selection_origin ) == 0 )
         {
             LogicalPosition start = s_line_selection_origin;
-            LogicalPosition end = Actions_component.validate_position( editor,
-                                                                       new LogicalPosition( caret_logical_position.line + 1,
-                                                                                            0 ) );
+            LogicalPosition end = validate_position( editor,
+                                                     new LogicalPosition( caret_logical_position.line + 1,
+                                                                          0 ) );
             editor.getCaretModel()
                   .getCurrentCaret()
                   .setSelection( editor.logicalPositionToOffset( start ),

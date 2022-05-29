@@ -22,6 +22,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
 
 @SuppressWarnings({ "UnnecessaryLocalVariable", "UnnecessaryReturnStatement" })
 public class Column_marking_component
@@ -82,7 +85,7 @@ public class Column_marking_component
 
         s_is_column_marking_mode = true;
 
-        State_component.status_bar_message( "<COLUMN-MARKING-MODE>" );
+        State_component.status_bar_message( Messages.message( "column.marking.mode" ) );
 
         s_column_selection_origin = editor.getCaretModel()
                                           .getLogicalPosition();
@@ -110,7 +113,7 @@ public class Column_marking_component
 
         if( remove_selection )
         {
-            if( Actions_component.has_selection( editor ) )
+            if( has_selection( editor ) )
             {
                 editor.getCaretModel()
                       .removeSecondaryCarets();
@@ -478,7 +481,7 @@ public class Column_marking_component
     {
         @Nullable Project project = editor.getProject();
         WriteCommandAction.runWriteCommandAction( project,
-                                                  "Delete Column Selection",
+                                                  Messages.message("command.name.delete.column.selection"),
                                                   null,
                                                   () -> delete_selection_write_action( editor ),
                                                   project != null ? ( PsiDocumentManager.getInstance( project )
@@ -522,7 +525,7 @@ public class Column_marking_component
     {
         @Nullable Project project = editor.getProject();
         WriteCommandAction.runWriteCommandAction( project,
-                                                  "Cut Column Selection",
+                                                  Messages.message("command.name.cut.column.selection"),
                                                   null,
                                                   () ->
                                                   {
@@ -780,7 +783,7 @@ public class Column_marking_component
             return gson.toJson( block_data );
         }
 
-        public static String get_mime_type()
+        public static @NonNls String get_mime_type()
         {
             return "text/brief-column-mode-block; class=" + Column_mode_block_transferable.class.getName();
         }

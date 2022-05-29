@@ -12,34 +12,36 @@ public class Settings_UI_component
 {
     private final JPanel myMainPanel;
 
-    private final JBCheckBox m_enabled = new JBCheckBox( "Enable or disable plugin." );
-    private final JBCheckBox m_paste_lines_at_home = new JBCheckBox( "Paste whole lines at home position." );
-    private final JBCheckBox m_use_brief_home = new JBCheckBox( "Use Brief home key functionality." );
-    private final JBCheckBox m_use_relative_bookmarks = new JBCheckBox( "Use project relative bookmarks." );
-    private final JBCheckBox m_check_active_keymap_is_brief = new JBCheckBox( "Startup check active keymap is Brief." );
-    private final JBCheckBox m_exit_only_closes_editor = new JBCheckBox( "\"Exit\" command only closes active editor." );
-    private final JBCheckBox m_write_all_and_exit_closes_IDEA = new JBCheckBox( "\"Write all and exit\" command closes the IDEA." );
-    private final JBCheckBox m_do_not_show_virtual_space_setting_dialog = new JBCheckBox( "Do not show virtual space setting dialog again." );
+    private final JBCheckBox m_enabled = new JBCheckBox( Messages.message( "checkbox.enable.or.disable.plugin" ) );
+    private final JBCheckBox m_show_icon_in_status_bar = new JBCheckBox( Messages.message( "checkbox.show.or.hide.status.bar.widget" ) );
+    private final JBCheckBox m_paste_lines_at_home = new JBCheckBox( Messages.message( "checkbox.paste.whole.lines.at.home.position" ) );
+    private final JBCheckBox m_use_brief_home = new JBCheckBox( Messages.message( "checkbox.use.brief.home.key.functionality" ) );
+    private final JBCheckBox m_check_active_keymap_is_brief = new JBCheckBox( Messages.message( "checkbox.startup.check.active.keymap.brief" ) );
+    private final JBCheckBox m_exit_only_closes_editor = new JBCheckBox( Messages.message( "checkbox.exit.command.only.closes.active.editor" ) );
+    private final JBCheckBox m_write_all_and_exit_closes_IDEA = new JBCheckBox( Messages.message( "checkbox.write.all.exit.command.closes.idea" ) );
+    private final JBCheckBox m_do_not_show_virtual_space_setting_dialog = new JBCheckBox( Messages.message( "checkbox.do.not.show.virtual.space.setting.dialog.again" ) );
+    private final JBCheckBox m_show_document_information = new JBCheckBox( Messages.message( "checkbox.show.document.information.in.status.bar" ) );
 
     public Settings_UI_component()
     {
-        m_enabled.setToolTipText( "Enable the Brief Editor Emulator functionality. Uncheck to disable the plugin." );
-        m_paste_lines_at_home.setToolTipText( "If the item in the scrap history buffer being pasted is a full line (ends with a line termination), then paste it at the beginning of the current line. Uncheck to paste at the current cursor location." );
-        m_use_brief_home.setToolTipText( "Use the home key functionality as documented in Brief. This disables the normal \"smart\" home functionality. Uncheck to restore \"smart\" home key functionality, but still maintain Brief \"home-home-home\" key functionality." );
-        m_use_relative_bookmarks.setToolTipText( "Bookmark URI are stored and displayed relative to project workspace folder. Uncheck to store and display bookmarks with global scope. Changing this configuration may delete existing stored bookmarks." );
-        m_check_active_keymap_is_brief.setToolTipText( "Initial check for active keymap is set to use the included Brief keymap at startup. Uncheck this if you modify the keymap, which makes a copy of the default Brief keymap, because startup will configure default Brief keymap as active keymap if this is checked." );
-        m_exit_only_closes_editor.setToolTipText( "\"Exit\" command will close the currently active editor, not the IDEA. Original Brief functionality would close the application. Uncheck this if you want the original functionality." );
-        m_write_all_and_exit_closes_IDEA.setToolTipText( "\"Write all and exit\" command will close the IDEA. This is original Brief functionality. Uncheck this if you want to close only the editors, but keep the IDEA running." );
-        m_do_not_show_virtual_space_setting_dialog.setToolTipText( "Disables showing of the virtual space setting dialog again when initiating the \"Right side of window\" action. Uncheck if you want to see this dialog again." );
+        m_enabled.setToolTipText( Messages.message( "enable.the.brief.editor.emulator.functionality.uncheck.to.disable.the.plugin" ) );
+        m_show_icon_in_status_bar.setToolTipText( Messages.message( "shows.or.hides.the.plugin.widget.icon.in.the.status.bar.uncheck.to.hide.the.status.bar.icon" ) );
+        m_paste_lines_at_home.setToolTipText( Messages.message( "if.the.item.in.the.scrap.history.buffer.being.pasted.is.a.full.line.ends.with.a.line.termination.then.paste.it.at.the.beginning.of.the.current.line.uncheck.to.paste.at.the.current.cursor.location" ) );
+        m_use_brief_home.setToolTipText( Messages.message( "use.the.home.key.functionality.as.documented.in.brief.this.disables.the.normal.smart.home.functionality.uncheck.to.restore.smart.home.key.functionality.but.still.maintain.brief.home.home.home.key.functionality" ) );
+        m_check_active_keymap_is_brief.setToolTipText( Messages.message( "initial.check.for.active.keymap.is.set.to.use.the.included.brief.keymap.at.startup.uncheck.this.if.you.modify.the.keymap.which.makes.a.copy.of.the.default.brief.keymap.because.startup.will.configure.default.brief.keymap.as.active.keymap.if.this.is.checked" ) );
+        m_exit_only_closes_editor.setToolTipText( Messages.message( "exit.command.will.close.the.currently.active.editor.not.the.idea.original.brief.functionality.would.close.the.application.uncheck.this.if.you.want.the.original.functionality" ) );
+        m_write_all_and_exit_closes_IDEA.setToolTipText( Messages.message( "write.all.and.exit.command.will.close.the.idea.this.is.original.brief.functionality.uncheck.this.if.you.want.to.close.only.the.editors.but.keep.the.idea.running" ) );
+        m_do_not_show_virtual_space_setting_dialog.setToolTipText( Messages.message( "disables.showing.of.the.virtual.space.setting.dialog.again.when.initiating.the.right.side.of.window.action.uncheck.if.you.want.to.see.this.dialog.again" ) );
+        m_show_document_information.setToolTipText( Messages.message( "shows.additional.document.information.offsets.lengths.in.the.status.bar.uncheck.if.you.don.t.want.to.see.extra.document.information.in.the.status.bar" ) );
 
         myMainPanel = FormBuilder.createFormBuilder()
                                  .addComponent( m_enabled,
                                                 1 )
+                                 .addComponent( m_show_icon_in_status_bar,
+                                                1 )
                                  .addComponent( m_paste_lines_at_home,
                                                 1 )
                                  .addComponent( m_use_brief_home,
-                                                1 )
-                                 .addComponent( m_use_relative_bookmarks,
                                                 1 )
                                  .addComponent( m_check_active_keymap_is_brief,
                                                 1 )
@@ -48,6 +50,8 @@ public class Settings_UI_component
                                  .addComponent( m_write_all_and_exit_closes_IDEA,
                                                 1 )
                                  .addComponent( m_do_not_show_virtual_space_setting_dialog,
+                                                1 )
+                                 .addComponent( m_show_document_information,
                                                 1 )
                                  .addComponentFillVertically( new JPanel(),
                                                               0 )
@@ -79,6 +83,9 @@ public class Settings_UI_component
         m_enabled.setSelected( check );
     }
 
+    public boolean get_show_icon_in_status_bar() { return m_show_icon_in_status_bar.isSelected(); }
+    public void set_show_icon_in_status_bar( boolean check ) { m_show_icon_in_status_bar.setSelected( check ); }
+
     public boolean get_paste_lines_at_home()
     {
         return m_paste_lines_at_home.isSelected();
@@ -95,15 +102,6 @@ public class Settings_UI_component
     public void set_use_brief_home( boolean check )
     {
         m_use_brief_home.setSelected( check );
-    }
-
-    public boolean get_use_relative_bookmarks()
-    {
-        return m_use_relative_bookmarks.isSelected();
-    }
-    public void set_use_relative_bookmarks( boolean check )
-    {
-        m_use_relative_bookmarks.setSelected( check );
     }
 
     public boolean get_check_active_keymap_is_brief()
@@ -124,9 +122,12 @@ public class Settings_UI_component
     }
     public void set_write_all_and_exit_closes_IDEA( boolean check ) { m_write_all_and_exit_closes_IDEA.setSelected( check ); }
 
-    public boolean get_do_not_show_virtual_space_setting_dialog()
-    {
-        return m_do_not_show_virtual_space_setting_dialog.isSelected();
-    }
+    public boolean get_do_not_show_virtual_space_setting_dialog() { return m_do_not_show_virtual_space_setting_dialog.isSelected(); }
     public void set_do_not_show_virtual_space_setting_dialog( boolean check ) { m_do_not_show_virtual_space_setting_dialog.setSelected( check ); }
+
+    public boolean get_show_document_information()
+    {
+        return m_show_document_information.isSelected();
+    }
+    public void set_show_document_information( boolean check ) { m_show_document_information.setSelected( check ); }
 }

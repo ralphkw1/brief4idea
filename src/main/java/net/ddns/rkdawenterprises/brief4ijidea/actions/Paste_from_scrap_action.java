@@ -3,8 +3,10 @@ package net.ddns.rkdawenterprises.brief4ijidea.actions;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import org.jetbrains.annotations.NotNull;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Paste_from_scrap_action
@@ -25,11 +27,11 @@ public class Paste_from_scrap_action
     @Override
     public void actionPerformed( @NotNull AnActionEvent e )
     {
-        Actions_component.do_action( "EditorPaste", e );
+        do_action( "EditorPaste", e );
 
         Editor editor = e.getData( CommonDataKeys.EDITOR );
         if( editor == null ) return;
 
-        Actions_component.stop_all_marking_modes( editor );
+        stop_all_marking_modes( editor );
     }
 }

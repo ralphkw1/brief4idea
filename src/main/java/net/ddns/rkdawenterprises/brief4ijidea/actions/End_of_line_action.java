@@ -6,14 +6,15 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.editor.ex.util.EditorUtil;
-import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import net.ddns.rkdawenterprises.brief4ijidea.Line_marking_component;
 import net.ddns.rkdawenterprises.brief4ijidea.Marking_component;
-import net.ddns.rkdawenterprises.brief4ijidea.Miscellaneous;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.get_editor_content_visible_area;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class End_of_line_action
@@ -52,7 +53,7 @@ public class End_of_line_action
                                                               .getTextLength() );
         if( at_file_end ) { return; }
 
-        Rectangle visible_area = Miscellaneous.get_editor_content_visible_area( editor );
+        Rectangle visible_area = get_editor_content_visible_area( editor );
         int max_Y = visible_area.y + visible_area.height - editor.getLineHeight();
         int visible_area_bottom_line_number = editor.yToVisualLine( max_Y );
         if( ( visible_area_bottom_line_number > 0 ) &&
@@ -90,22 +91,19 @@ public class End_of_line_action
         {
             if( Marking_component.is_marking_mode() )
             {
-                Actions_component.do_action( "EditorTextEndWithSelection",
-                                             e );
+                do_action( "EditorTextEndWithSelection", e );
                 return;
             }
 
             if( Line_marking_component.is_line_marking_mode() )
             {
-                Actions_component.do_action( "EditorTextEndWithSelection",
-                                             e );
+                do_action( "EditorTextEndWithSelection", e );
                 Line_marking_component.line_marking_post_handler( editor,
                                                                   KeyEvent.VK_HOME );
                 return;
             }
 // TODO: Account for column marking mode...
-            Actions_component.do_action( "EditorTextEnd",
-                                         e );
+            do_action( "EditorTextEnd", e );
             return;
         }
 
@@ -122,46 +120,42 @@ public class End_of_line_action
         {
             if( Marking_component.is_marking_mode() )
             {
-                Actions_component.do_action( "EditorMoveToPageBottomWithSelection",
-                                             e );
+                do_action( "EditorMoveToPageBottomWithSelection", e );
                 return;
             }
 
             if( Line_marking_component.is_line_marking_mode() )
             {
-                Actions_component.do_action( "EditorMoveToPageBottomWithSelection",
-                                             e );
+                do_action( "EditorMoveToPageBottomWithSelection", e );
                 Line_marking_component.line_marking_post_handler( editor,
                                                                   KeyEvent.VK_END );
 
                 return;
             }
 
-            Actions_component.do_action( "EditorMoveToPageBottom",
-                                         e );
-            Actions_component.do_action( "EditorLineEnd",
-                                         e );
+// TODO: Account for column marking mode...
+            do_action( "EditorMoveToPageBottom", e );
+            do_action( "EditorLineEnd", e );
             return;
         }
 
         if( Marking_component.is_marking_mode() )
         {
-            Actions_component.do_action( "EditorLineEndWithSelection",
-                                         e );
+            do_action( "EditorLineEndWithSelection", e );
             return;
         }
 
         if( Line_marking_component.is_line_marking_mode() &&
                 ( caret_logical_position.line == last_line_number ) )
         {
-            Actions_component.do_action( "EditorLineEndWithSelection",
+            do_action( "EditorLineEndWithSelection",
                                          e );
             Line_marking_component.line_marking_post_handler( editor,
                                                               KeyEvent.VK_END );
             return;
         }
 
-        Actions_component.do_action( "EditorLineEnd",
-                                     e );
+// TODO: Account for column marking mode...
+        do_action( "EditorLineEnd", e );
     }
 }

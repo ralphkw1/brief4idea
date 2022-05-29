@@ -16,6 +16,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
+
 public class Marking_component
 {
     private static boolean s_is_marking_mode = false;
@@ -73,7 +75,7 @@ public class Marking_component
 
         if( remove_selection )
         {
-            if( Actions_component.has_selection( editor ) )
+            if( has_selection( editor ) )
             {
                 editor.getCaretModel()
                       .removeSecondaryCarets();

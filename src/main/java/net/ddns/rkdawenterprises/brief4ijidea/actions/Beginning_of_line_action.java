@@ -13,6 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.get_editor_content_visible_area;
+
 @SuppressWarnings({ "ComponentNotRegistered", "unused", "UnnecessaryReturnStatement" })
 public class Beginning_of_line_action
         extends Plugin_action
@@ -41,7 +44,7 @@ public class Beginning_of_line_action
         boolean at_file_start = ( ( caret_position.line == 0 ) && ( caret_position.column == 0 ) );
         if( at_file_start ) { return; }
 
-        Rectangle visible_area = Miscellaneous.get_editor_content_visible_area( editor );
+        Rectangle visible_area = get_editor_content_visible_area( editor );
         int visible_area_top_line_number = editor.yToVisualLine( visible_area.y );
         if( ( visible_area.y > editor.visualLineToY( visible_area_top_line_number ) ) &&
                 ( ( visible_area.y + visible_area.height ) > editor.visualLineToY( visible_area_top_line_number + 1 ) ) )
@@ -70,22 +73,19 @@ public class Beginning_of_line_action
         {
             if( Marking_component.is_marking_mode() )
             {
-                Actions_component.do_action( "EditorTextStartWithSelection",
-                                             e );
+                do_action( "EditorTextStartWithSelection", e );
                 return;
             }
 
             if( Line_marking_component.is_line_marking_mode() )
             {
-                Actions_component.do_action( "EditorTextStartWithSelection",
-                                             e );
+                do_action( "EditorTextStartWithSelection", e );
                 Line_marking_component.line_marking_post_handler( editor,
                                                                   KeyEvent.VK_HOME );
                 return;
             }
 
-            Actions_component.do_action( "EditorTextStart",
-                                         e );
+            do_action( "EditorTextStart", e );
             return;
         }
 
@@ -94,23 +94,20 @@ public class Beginning_of_line_action
         {
             if( Marking_component.is_marking_mode() )
             {
-                Actions_component.do_action( "EditorMoveToPageTopWithSelection",
-                                             e );
+                do_action( "EditorMoveToPageTopWithSelection", e );
                 return;
             }
 
             if( Line_marking_component.is_line_marking_mode() )
             {
-                Actions_component.do_action( "EditorMoveToPageTopWithSelection",
-                                             e );
+                do_action( "EditorMoveToPageTopWithSelection", e );
                 Line_marking_component.line_marking_post_handler( editor,
                                                                   KeyEvent.VK_HOME );
 
                 return;
             }
 
-            Actions_component.do_action( "EditorMoveToPageTop",
-                                         e );
+            do_action( "EditorMoveToPageTop", e );
             return;
         }
 
@@ -129,13 +126,11 @@ public class Beginning_of_line_action
         {
             if( Marking_component.is_marking_mode() )
             {
-                Actions_component.do_action( "EditorLineStartWithSelection",
-                                             e );
+                do_action( "EditorLineStartWithSelection", e );
             }
             else
             {
-                Actions_component.do_action( "EditorLineStart",
-                                             e );
+                do_action( "EditorLineStart", e );
             }
         }
 

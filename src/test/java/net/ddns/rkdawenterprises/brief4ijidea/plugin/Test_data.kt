@@ -154,7 +154,7 @@ object Test_data
                     EditorActionManager editor_action_manager = EditorActionManager.getInstance();
 
                     editor_action_manager.setActionHandler( IdeActions.ACTION_EDITOR_MOVE_CARET_UP,
-                                                            new Editor_action_handler( editor_action_manager.getActionHandler( IdeActions.ACTION_EDITOR_MOVE_CARET_UP ),
+                                                            new Editor_action_handler( editor_action_manager.getActionHandler( IdeActions.ACTION_EDITOR_MOVE_CARET_UP ), // This comment is just to make sure this line is much longer than the current editor window to be able to test the left side of window command.
                                                                                        editor_action_manager.getActionHandler( IdeActions.ACTION_EDITOR_MOVE_CARET_UP ),
                                                                                        KeyEvent.VK_UP ) );
 
