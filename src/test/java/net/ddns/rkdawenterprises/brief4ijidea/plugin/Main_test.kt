@@ -29,10 +29,12 @@ import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.escape
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_caret_logical_position
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_caret_visual_position
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_current_line_number
+import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_delete_to_word_boundry_range
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_end_offset
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_line
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_line_length
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_line_number
+import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_lines
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_start_offset
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_visible_area_bottom_offset_line
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_visible_area_left_offset_of_current_line
@@ -108,8 +110,10 @@ class Main_test
                 }
                 findText("src").click(MouseButton.RIGHT_BUTTON)
             }
-            remoteRobot.actionMenu("New").click()
-            remoteRobot.actionMenuItem("Java Class").click()
+            remoteRobot.actionMenu("New")
+                .click()
+            remoteRobot.actionMenuItem("Java Class")
+                .click()
             keyboard { enterText("Test"); enter() }
         }
 
@@ -140,23 +144,270 @@ class Main_test
     {
         step("Test the commands") {
             // TODO: Prompt user to close browser.
-            test_help_menu_command()
-            test_quick_java_doc_command()
-            test_undo_redo_commands()
-            // TODO: Issuing the hotkey for rename opens the dialog many times. User most close all but one.
-            test_change_output_file_command()
-            test_beginning_of_line_command()
-            test_end_of_line_command()
-            test_top_of_buffer_command()
-            test_end_of_buffer_command()
-            test_top_of_window_command()
-            test_end_of_window_command()
-            test_left_side_of_window_command()
-            test_right_side_of_window_command()
-            test_scroll_buffer_down_in_window_command()
-            test_go_to_line_command()
-            test_delete_line_command()
-            test_delete_next_word_command()
+//            test_help_menu_command()
+//            test_quick_java_doc_command()
+//            test_undo_redo_commands()
+            // TODO: Issuing the hotkey for rename opens the dialog many times. For now, user must close all but one.
+//            test_change_output_file_command()
+//            test_beginning_of_line_command()
+//            test_end_of_line_command()
+//            test_top_of_buffer_command()
+//            test_end_of_buffer_command()
+//            test_top_of_window_command()
+//            test_end_of_window_command()
+//            test_left_side_of_window_command()
+//            test_right_side_of_window_command()
+//            test_scroll_buffer_down_in_window_command()
+//            test_go_to_line_command()
+//            test_delete_line_command()
+//            test_delete_next_word_command()
+//            test_delete_previous_word_command()
+//            test_delete_to_beginning_of_line_command()
+//            test_delete_to_end_of_line_command()
+//            test_insert_mode_toggle_command()
+//            test_open_line_command()
+//            test_mark_command()
+            test_line_mark_command()
+        }
+    }
+
+    private fun IdeaFrame.test_line_mark_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Line mark. Description: Starts marking a line at a time.")
+        {
+            val line = 70;
+            val text_of_lines = editor_fixture.get_lines(line, 4);
+
+            editor_fixture.move_to_line(line);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_L);
+                key(VK_DOWN);
+                key(VK_DOWN);
+                key(VK_DOWN);
+            }
+
+            val selected = editor_fixture.selectedText;
+
+            assert(text_of_lines == selected);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_L);
+            }
+        }
+    }
+
+    private fun IdeaFrame.test_mark_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Mark. Description: Starts normal marking mode.")
+        {
+            val line = 43;
+            val text_of_line = editor_fixture.get_line(line);
+            val test_column_start = text_of_line.length / 4;
+
+            editor_fixture.move_to_line(line,
+                                        test_column_start);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_M);
+                key(VK_RIGHT);
+                key(VK_RIGHT);
+                key(VK_RIGHT);
+            }
+
+            val test_text = text_of_line.subSequence(test_column_start, test_column_start + 4);
+            val selected = editor_fixture.selectedText;
+
+            assert(test_text == selected);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_M);
+            }
+        }
+    }
+
+    private fun IdeaFrame.test_open_line_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Open line. Description: Inserts a blank line after the current line and places the cursor on the first column of this new line.")
+        {
+            val line = 43;
+            val text_of_line = editor_fixture.get_line(line);
+            val text_of_second_line = editor_fixture.get_line(line + 1);
+            val text_of_third_line = editor_fixture.get_line(line + 2);
+            val test_column = text_of_line.length / 2;
+            editor_fixture.move_to_line(line,
+                                        test_column)
+
+            assert(text_of_second_line.length > 2)
+
+            keyboard {
+                hotKey(VK_CONTROL,
+                       VK_ENTER);
+            }
+
+            val text_of_line_again = editor_fixture.get_line(line);
+            val text_of_second_line_again = editor_fixture.get_line(line + 1);
+            val text_of_third_line_again = editor_fixture.get_line(line + 2);
+
+            assert(text_of_line == text_of_line_again);
+            assert(text_of_second_line != text_of_second_line_again)
+            assert(text_of_second_line == text_of_third_line_again)
+
+            val regex = "^\\s+\$".toRegex();
+            assert(regex.matches(text_of_second_line_again))
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_U);
+            }
+        }
+    }
+
+    private fun IdeaFrame.test_insert_mode_toggle_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Insert mode toggle. Description: Switches between insert mode and overstrike mode.")
+        {
+            val line = 44;
+            var text_of_line = editor_fixture.get_line(line);
+            val test_column = text_of_line.length / 2;
+            editor_fixture.move_to_line(line,
+                                        test_column)
+
+            val test_text = "RalphKW"
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_I);
+                enterText(test_text)
+            }
+
+            val line_modified = StringBuilder(text_of_line.removeRange(test_column, test_column + test_text.length))
+                .insert(test_column, test_text);
+
+            text_of_line = editor_fixture.get_line(line);
+
+            assert(line_modified.toString() == text_of_line);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_I);
+            }
+        }
+    }
+
+    private fun IdeaFrame.test_delete_to_end_of_line_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Delete to end of line. Description: Deletes all characters from the current position to the end of the line.")
+        {
+            val line = 44;
+            var text_of_line = editor_fixture.get_line(line);
+            val test_column = text_of_line.length / 2;
+            editor_fixture.move_to_line(line, test_column)
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_K);
+            }
+
+            val line_modified = text_of_line.removeRange(test_column, (text_of_line.length - 1));
+            text_of_line = editor_fixture.get_line(line);
+
+            assert(line_modified == text_of_line);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_U);
+            }
+        }
+    }
+
+    private fun IdeaFrame.test_delete_to_beginning_of_line_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Delete to beginning of line. Description: Deletes all characters before the cursor to the beginning of the line.")
+        {
+            val line = 44;
+            var text_of_line = editor_fixture.get_line(line);
+            val test_column = text_of_line.length / 2;
+            editor_fixture.move_to_line(line, test_column)
+
+            keyboard {
+                hotKey(VK_CONTROL,
+                       VK_K);
+            }
+
+            val line_modified = text_of_line.removeRange(0, test_column);
+            text_of_line = editor_fixture.get_line(line);
+
+            assert(line_modified == text_of_line);
+            
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_U);
+            }
+        }
+    }
+
+    private fun IdeaFrame.test_delete_previous_word_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Delete previous word. Description: Deletes from the cursor position to the beginning of the previous word.")
+        {
+            val line = 44;
+            var text_of_line = editor_fixture.get_line(line);
+            editor_fixture.clickOnOffset(editor_fixture.get_end_offset(line));
+            Thread.sleep(500);
+
+            val range_to_delete = editor_fixture.get_delete_to_word_boundry_range(false);
+            val line_modified = text_of_line.removeRange(range_to_delete[0].column, range_to_delete[1].column);
+
+            keyboard {
+                hotKey(VK_CONTROL,
+                       VK_BACK_SPACE);
+            }
+
+            text_of_line = editor_fixture.get_line(line);
+            assert(line_modified == text_of_line);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_U);
+            }
         }
     }
 
@@ -165,43 +416,29 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Delete next word. Description: Deletes from the cursor position to the start of the next word.")
+        step("Command: Delete next word. Description: Deletes from the cursor position to the start of the next word.")
         {
             val line = 306;
+            var text_of_line = editor_fixture.get_line(line);
             editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
             Thread.sleep(500)
 
-            var text_of_line = editor_fixture.get_line(line);
+            val range_to_delete = editor_fixture.get_delete_to_word_boundry_range(true);
+            val line_modified = text_of_line.removeRange(range_to_delete[0].column, range_to_delete[1].column);
 
-            // This regex should be what two "Delete next word" commands will delete assuming the line has leading whitespace.
-            val removed = "^\\s+[a-zA-Z_$][a-zA-Z\\\\d_$]*".toRegex().find(text_of_line);
-            if(removed != null)
-            {
-                val line_modified = text_of_line.replace(removed.value, "");
-
-                editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
-                Thread.sleep(500)
-
-                keyboard {
-                    hotKey(VK_ALT,
-                           VK_BACK_SPACE)
-                    hotKey(VK_ALT,
-                           VK_BACK_SPACE)
-                }
-
-                text_of_line = editor_fixture.get_line(line);
-                assert(line_modified == text_of_line)
-
-                keyboard {
-                    hotKey(VK_ALT,
-                           VK_U)
-                    hotKey(VK_ALT,
-                           VK_U)
-                }
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_BACK_SPACE)
             }
-            else
-            {
-                assert(false)
+
+            text_of_line = editor_fixture.get_line(line);
+            assert(line_modified == text_of_line);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_U);
+                hotKey(VK_ALT,
+                       VK_U);
             }
         }
     }
@@ -211,7 +448,7 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Delete line. Description: Deletes the entire current line.")
+        step("Command: Delete line. Description: Deletes the entire current line.")
         {
             val line = 306;
             editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
@@ -249,7 +486,7 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Go to line. Description: Moves the cursor to the specified line number.")
+        step("Command: Go to line. Description: Moves the cursor to the specified line number.")
         {
             val line = 178;
             editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
@@ -275,7 +512,7 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Scroll buffer up in window. Description: Moves the buffer, if possible, up one line in the window, keeping the cursor on the same line.")
+        step("Command: Scroll buffer up in window. Description: Moves the buffer, if possible, up one line in the window, keeping the cursor on the same line.")
         {
             val line = 178;
             editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
@@ -305,7 +542,7 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Scroll buffer down in window. Description: Moves the buffer, if possible, down one line in the window, keeping the cursor on the same line.")
+        step("Command: Scroll buffer down in window. Description: Moves the buffer, if possible, down one line in the window, keeping the cursor on the same line.")
         {
             val line = 178;
             editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
@@ -335,7 +572,7 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Right side of window. Description: Moves the cursor to the right side of the window, regardless of the length of the line.")
+        step("Command: Right side of window. Description: Moves the cursor to the right side of the window, regardless of the length of the line.")
         {
             val line = 144;
             editor_fixture.clickOnOffset(editor_fixture.get_start_offset(line));
@@ -385,7 +622,7 @@ class Main_test
         val text_editor_fixture = textEditor()
         val editor_fixture = text_editor_fixture.editor
 
-        step("Left side of window. Description: Moves the cursor to the left side of the window.")
+        step("Command: Left side of window. Description: Moves the cursor to the left side of the window.")
         {
             val line = 148;
             editor_fixture.clickOnOffset(editor_fixture.get_end_offset(line));
@@ -504,8 +741,7 @@ class Main_test
 
         step("Command: Top of buffer. Description: Moves the cursor to the first character of the buffer.")
         {
-            editor_fixture.move_to_line(159,
-                                                    68)
+            editor_fixture.move_to_line(159, 68)
             val starting_offset = editor_fixture.caretOffset
             assert(starting_offset != 0)
 
@@ -528,8 +764,7 @@ class Main_test
         {
             val line = 159
             val column = 68
-            editor_fixture.move_to_line(line,
-                                                    Column_target.END)
+            editor_fixture.move_to_line(line, Column_target.END)
             val end_of_line_offset = editor_fixture.caretOffset
             editor_fixture.move_to_line(line, column)
             val window_end_offset_line = editor_fixture.get_visible_area_bottom_offset_line()
@@ -738,6 +973,7 @@ class Main_test
         }
     }
 
+// TODO:
 //    @AfterEach
 //    fun closeProject(remoteRobot: RemoteRobot) = with(remoteRobot) {
 //        idea {

@@ -373,4 +373,9 @@
   <action id="net.ddns.rkdawenterprises.brief4ijidea.actions.repeat">
     <keyboard-shortcut first-keystroke="control R"/>
   </action>
+
+  <!--  Command: Go to Definition. Description: Since "control B" is remapped, and this command is used so much, giving it an alternate. -->
+  <action id="net.ddns.rkdawenterprises.brief4ijidea.actions.go_to_definition">
+    <keyboard-shortcut first-keystroke="F12"/>
+  </action>
 </keymap>

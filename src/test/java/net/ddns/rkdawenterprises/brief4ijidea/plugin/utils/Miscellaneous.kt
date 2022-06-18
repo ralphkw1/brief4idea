@@ -97,10 +97,10 @@ fun EditorFixture.get_line(line_number: Int): String
     val script =
         """
             importPackage(com.intellij.openapi.command);
-
+            
             const editor = local.get('editor');
             const project = editor.getProject();
-    
+                
             WriteCommandAction.runWriteCommandAction(project, new Runnable({
                 run: function () {
                     editor.getSelectionModel().selectLineAtCaret();
@@ -112,6 +112,34 @@ fun EditorFixture.get_line(line_number: Int): String
     Thread.sleep(500)
 
     return selectedText
+}
+
+fun EditorFixture.get_lines(line_number: Int, number_of_lines: Int): String
+{
+    move_to_line(line_number)
+
+    val script =
+        """
+            importPackage(com.intellij.openapi.command);
+                        
+            const editor = component.getEditor();
+            const document = editor.getDocument();
+            const project = editor.getProject();
+            
+            const start_offset = document.getLineStartOffset($line_number);
+            const end_offset = document.getLineStartOffset($line_number + $number_of_lines);
+                
+            WriteCommandAction.runWriteCommandAction(project, new Runnable({
+                run: function () {
+                    editor.getSelectionModel().setSelection(start_offset, end_offset);
+                }
+            }));
+        """.trimIndent();
+
+    runJs(script, true)
+    Thread.sleep(500)
+
+    return selectedText;
 }
 
 /**
@@ -436,4 +464,29 @@ fun IdeaFrame.click_on_status_icon_settings()
     val list = heavyWeightWindows()[0].itemsList
     list.clickItem("Settings")
     Thread.sleep(500)
+}
+
+fun EditorFixture.get_delete_to_word_boundry_range(end_n_start: Boolean): Array<LogicalPosition>
+{
+    val script =
+        """
+            importPackage(com.intellij.openapi.editor.actions);
+            
+            const editor = local.get('editor');
+            const document = local.get('document');
+            
+            const camel_mode = editor.getSettings().isCamelWords();
+            const text_range = $end_n_start ? EditorActionUtil.getRangeToWordEnd(editor, camel_mode, true) :
+                                              EditorActionUtil.getRangeToWordStart(editor, camel_mode, true);
+            
+            const start_position = editor.offsetToLogicalPosition(text_range.getStartOffset());
+            const end_position = editor.offsetToLogicalPosition(text_range.getEndOffset());
+            
+            start_position.line.toString() + ',' + start_position.column.toString() + ',' +
+                end_position.line.toString() + ',' + end_position.column.toString();
+        """.trimIndent()
+    val range = callJs<String>(script, true);
+    val start_end = range.split(',').toTypedArray()
+    return arrayOf(LogicalPosition(start_end[0].toInt(), start_end[1].toInt()),
+                   LogicalPosition(start_end[2].toInt(), start_end[3].toInt()));
 }
