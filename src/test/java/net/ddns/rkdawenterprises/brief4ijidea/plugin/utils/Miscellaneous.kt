@@ -20,12 +20,15 @@ import com.intellij.remoterobot.utils.waitFor
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.DialogFixture
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.DialogFixture.Companion.byTitle
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.IdeaFrame
+import org.apache.commons.lang.StringUtils
 import java.awt.Point
 import java.time.Duration
 
-fun String.escape(): String = this.replace("\n", "\\n")
+fun String.escape(): String = this.replace("\n",
+                                           "\\n")
 
-fun optional_step(step_name: String, code: () -> Unit) = step(step_name)
+fun optional_step(step_name: String,
+                  code: () -> Unit) = step(step_name)
 {
     try
     {
@@ -37,7 +40,8 @@ fun optional_step(step_name: String, code: () -> Unit) = step(step_name)
     }
 }
 
-enum class Column_target { START, END }
+enum class Column_target
+{ START, END }
 
 fun EditorFixture.scroll_to_line(line_number: Int)
 {
@@ -48,11 +52,13 @@ fun EditorFixture.scroll_to_line(line_number: Int)
             const offset = document.getLineStartOffset($line_number);
             editor.getScrollingModel().scrollTo(editor.offsetToLogicalPosition(offset), com.intellij.openapi.editor.ScrollType.CENTER);
         """.trimIndent();
-    runJs(script, true)
+    runJs(script,
+          true)
     Thread.sleep(500)
 }
 
-fun EditorFixture.move_to_line(line_number: Int, column_target: Column_target = Column_target.START)
+fun EditorFixture.move_to_line(line_number: Int,
+                               column_target: Column_target = Column_target.START)
 {
     if(column_target == Column_target.START)
     {
@@ -66,7 +72,8 @@ fun EditorFixture.move_to_line(line_number: Int, column_target: Column_target = 
     }
 }
 
-fun EditorFixture.move_to_line(line_number: Int, column_number: Int)
+fun EditorFixture.move_to_line(line_number: Int,
+                               column_number: Int)
 {
     val script =
         """
@@ -78,7 +85,8 @@ fun EditorFixture.move_to_line(line_number: Int, column_number: Int)
             const visual_position = editor.offsetToVisualPosition(offset);
             editor.visualPositionToXY(visual_position);
         """.trimIndent()
-    val point = callJs<Point>(script, true)
+    val point = callJs<Point>(script,
+                              true)
     Thread.sleep(500)
     click(point)
 }
@@ -108,13 +116,23 @@ fun EditorFixture.get_line(line_number: Int): String
             }));
         """.trimIndent();
 
-    runJs(script, true)
+    runJs(script,
+          true)
     Thread.sleep(500)
 
     return selectedText
 }
 
-fun EditorFixture.get_lines(line_number: Int, number_of_lines: Int): String
+/**
+ * Gets the requested lines.
+ * Note: the lines are selected.
+ *
+ * @param line_number
+ * @param number_of_lines
+ * @return A '\n' delimited string containing the requested lines.
+ */
+fun EditorFixture.get_lines(line_number: Int,
+                            number_of_lines: Int): String
 {
     move_to_line(line_number)
 
@@ -136,10 +154,73 @@ fun EditorFixture.get_lines(line_number: Int, number_of_lines: Int): String
             }));
         """.trimIndent();
 
-    runJs(script, true)
+    runJs(script,
+          true)
     Thread.sleep(500)
 
     return selectedText;
+}
+
+/**
+ * Uses get_lines() to obtain the associated set of lines, then extracts the block from the set of lines.
+ *
+ * @param line_start First line of requested block. Zero based.
+ * @param column_start First column of requested block. Zero based.
+ * @param number_of_lines Vertical size of the block.
+ * @param number_of_columns Horizontal size of the block.
+ * @return
+ */
+fun EditorFixture.get_block(line_start: Int,
+                            column_start: Int,
+                            number_of_lines: Int,
+                            number_of_columns: Int): Array<String?>
+{
+    val lines = get_lines(line_start,
+                          number_of_lines).replace("\r",
+                                                   "")
+        .split('\n');
+
+    var rows: Array<String?> = arrayOfNulls<String>(number_of_lines);
+
+    for(i in lines.indices)
+    {
+        if(i < number_of_lines)
+        {
+            if(lines[i].length > column_start)
+            {
+                val end_index = if((column_start + number_of_columns) > lines[i].length)
+                {
+                    lines[i].length
+                }
+                else
+                {
+                    (column_start + number_of_columns)
+                }
+
+                rows[i] = lines[i].substring(column_start,
+                                             end_index);
+            }
+        }
+    }
+
+    // Fill empty or smaller rows.
+    for(i in rows.indices)
+    {
+        val length = rows[i]?.length ?: 0
+
+        if(rows[i] == null)
+        {
+            rows[i] = StringUtils.repeat(" ",
+                                         number_of_columns)
+        }
+        else if(length < number_of_columns)
+        {
+            rows[i] = rows[i] + StringUtils.repeat(" ",
+                                                   number_of_columns - length)
+        }
+    }
+
+    return rows;
 }
 
 /**
@@ -175,8 +256,10 @@ fun EditorFixture.get_visible_area_top_offset_line(): IntArray
             offset.toString() + ',' + visible_area_top_line_number.toString() + ',' +
             alternate_offset.toString() + ',' + visible_area_top_line_number_alternate.toString();
         """.trimIndent();
-    val offset_line = callJs<String>(script, true);
-    val offset_lines = offset_line.split(",").toTypedArray();
+    val offset_line = callJs<String>(script,
+                                     true);
+    val offset_lines = offset_line.split(",")
+        .toTypedArray();
     return intArrayOf(offset_lines[0].toInt(),
                       offset_lines[1].toInt(),
                       offset_lines[2].toInt(),
@@ -223,8 +306,10 @@ fun EditorFixture.get_visible_area_bottom_offset_line(): IntArray
             offset.toString() + ',' + visible_area_bottom_line_number.toString() + ',' +
             offset_alternate.toString() + ',' + visible_area_bottom_line_number_alternate.toString();
         """.trimIndent();
-    val offset_line = callJs<String>(script, true);
-    val offset_lines = offset_line.split(",").toTypedArray();
+    val offset_line = callJs<String>(script,
+                                     true);
+    val offset_lines = offset_line.split(",")
+        .toTypedArray();
     return intArrayOf(offset_lines[0].toInt(),
                       offset_lines[1].toInt(),
                       offset_lines[2].toInt(),
@@ -249,7 +334,8 @@ fun EditorFixture.get_visible_area_left_offset_of_current_line(): Int
             const window_left_at_line_visual_position = editor.xyToVisualPosition( window_left_at_line_point );
             editor.visualPositionToOffset( window_left_at_line_visual_position );
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun EditorFixture.get_visible_area_right_visual_position_of_current_line(): VisualPosition
@@ -276,8 +362,10 @@ fun EditorFixture.get_visible_area_right_visual_position_of_current_line(): Visu
             
             window_right_at_line_visual_position.line.toString() + ',' + window_right_at_line_visual_position.column.toString();
         """.trimIndent();
-    val position = callJs<String>(script, true);
-    val line_column = position.split(',').toTypedArray()
+    val position = callJs<String>(script,
+                                  true);
+    val line_column = position.split(',')
+        .toTypedArray()
     return VisualPosition(line_column[0].toInt(),
                           line_column[1].toInt());
 }
@@ -290,7 +378,8 @@ fun EditorFixture.get_current_line_number(): Int
             const document = local.get('document');
             editor.offsetToLogicalPosition(editor.getCaretModel().getOffset()).line;
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun EditorFixture.get_line_number(offset: Int): Int
@@ -300,7 +389,8 @@ fun EditorFixture.get_line_number(offset: Int): Int
             const editor = local.get('editor');
             editor.offsetToLogicalPosition($offset).line;
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun EditorFixture.get_start_offset(line_number: Int): Int
@@ -311,7 +401,8 @@ fun EditorFixture.get_start_offset(line_number: Int): Int
             const document = local.get('document');
             document.getLineStartOffset($line_number);
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun EditorFixture.get_end_column(line_number: Int): Int
@@ -323,7 +414,8 @@ fun EditorFixture.get_end_column(line_number: Int): Int
             const editor = local.get('editor');
             EditorUtil.getLastVisualLineColumnNumber( editor, $line_number );
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun EditorFixture.get_end_offset(line_number: Int): Int
@@ -337,7 +429,8 @@ fun EditorFixture.get_end_offset(line_number: Int): Int
             document.getLineStartOffset($line_number) +
                 EditorUtil.getLastVisualLineColumnNumber( editor, $line_number );
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun EditorFixture.get_end_offset(): Int
@@ -347,7 +440,8 @@ fun EditorFixture.get_end_offset(): Int
             const document = local.get('document');
             document.getTextLength();
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 }
 
 fun close_tip_of_the_day(remote_robot: RemoteRobot) = optional_step("Close Tip of the Day if it appears")
@@ -361,16 +455,20 @@ fun close_tip_of_the_day(remote_robot: RemoteRobot) = optional_step("Close Tip o
     val idea: IdeaFrame = remote_robot.find(IdeaFrame::class.java)
     idea.dumbAware {
         idea.find(DialogFixture::class.java,
-                  byTitle("Tip of the Day")).button("Close").click()
+                  byTitle("Tip of the Day"))
+            .button("Close")
+            .click()
     }
 
 }
 
 fun close_all_tabs(remote_robot: RemoteRobot) = step("Close all existing tabs")
 {
-    remote_robot.findAll<CommonContainerFixture>(byXpath("//div[@class='EditorTabs']//div[@class='SingleHeightLabel']")).forEach {
-        it.find<ComponentFixture>(byXpath("//div[@class='InplaceButton']")).click()
-    }
+    remote_robot.findAll<CommonContainerFixture>(byXpath("//div[@class='EditorTabs']//div[@class='SingleHeightLabel']"))
+        .forEach {
+            it.find<ComponentFixture>(byXpath("//div[@class='InplaceButton']"))
+                .click()
+        }
 }
 
 /**
@@ -389,7 +487,8 @@ fun EditorFixture.get_line_length(line_number: Int): Int
             const editor = local.get('editor');
             EditorUtil.getLastVisualLineColumnNumber( editor, $line_number );
         """.trimIndent();
-    return callJs(script, true)
+    return callJs(script,
+                  true)
 
 }
 
@@ -403,9 +502,10 @@ val CommonContainerFixture.tree_fixtures: List<JTreeFixture>
  */
 fun JTreeFixture.click_path(path: String)
 {
-    val paths = collectExpandedPaths().toString().
-    replaceFirst("TreePathToRow", "").
-    split(", TreePathToRow")
+    val paths = collectExpandedPaths().toString()
+        .replaceFirst("TreePathToRow",
+                      "")
+        .split(", TreePathToRow")
 
     for(i in paths.indices)
     {
@@ -420,13 +520,14 @@ fun JTreeFixture.click_path(path: String)
             if((start_index != -1) && (end_index != -1))
             {
                 val index = string.substring(start_index,
-                                             end_index).toInt()
+                                             end_index)
+                    .toInt()
                 clickRow(index)
                 break
             }
         }
     }
-    
+
     Thread.sleep(500)
 }
 
@@ -437,7 +538,8 @@ fun EditorFixture.get_caret_logical_position(): LogicalPosition
             const current_logical_position = local.get('editor').getCaretModel().getLogicalPosition();
             current_logical_position.line.toString() + ',' + current_logical_position.column.toString();
         """.trimIndent()
-    val position = callJs<String>(script, true)
+    val position = callJs<String>(script,
+                                  true)
     val line_column = position.split(',')
     return LogicalPosition(line_column[0].toInt(),
                            line_column[1].toInt())
@@ -451,8 +553,10 @@ fun EditorFixture.get_caret_visual_position(): VisualPosition
             const current_visual_position = editor.getCaretModel().getVisualPosition();
             current_visual_position.line.toString() + ',' + current_visual_position.column.toString();
         """.trimIndent()
-    val position = callJs<String>(script, true)
-    val line_column = position.split(',').toTypedArray()
+    val position = callJs<String>(script,
+                                  true)
+    val line_column = position.split(',')
+        .toTypedArray()
     return VisualPosition(line_column[0].toInt(),
                           line_column[1].toInt());
 }
@@ -485,8 +589,23 @@ fun EditorFixture.get_delete_to_word_boundry_range(end_n_start: Boolean): Array<
             start_position.line.toString() + ',' + start_position.column.toString() + ',' +
                 end_position.line.toString() + ',' + end_position.column.toString();
         """.trimIndent()
-    val range = callJs<String>(script, true);
-    val start_end = range.split(',').toTypedArray()
-    return arrayOf(LogicalPosition(start_end[0].toInt(), start_end[1].toInt()),
-                   LogicalPosition(start_end[2].toInt(), start_end[3].toInt()));
+    val range = callJs<String>(script,
+                               true);
+    val start_end = range.split(',')
+        .toTypedArray()
+    return arrayOf(LogicalPosition(start_end[0].toInt(),
+                                   start_end[1].toInt()),
+                   LogicalPosition(start_end[2].toInt(),
+                                   start_end[3].toInt()));
+}
+
+fun EditorFixture.get_clipboard_text(): String
+{
+    val script =
+        """
+            importPackage(com.intellij.openapi.application.ex);
+            ClipboardUtil.getTextInClipboard();
+        """.trimIndent()
+    return callJs<String>(script,
+                          true);
 }

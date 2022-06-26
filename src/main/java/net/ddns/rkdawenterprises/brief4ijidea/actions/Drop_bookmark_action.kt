@@ -2,7 +2,8 @@
                "ComponentNotRegistered",
                "unused",
                "ClassName",
-               "FunctionName")
+               "FunctionName",
+               "LocalVariableName")
 
 package net.ddns.rkdawenterprises.brief4ijidea.actions
 

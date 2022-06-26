@@ -545,19 +545,7 @@ public class Column_marking_component
                               Editor editor,
                               String block_JSON )
     {
-        Column_mode_block_data block_data;
-        try
-        {
-            Gson gson = new GsonBuilder().disableHtmlEscaping()
-                                         .setPrettyPrinting()
-                                         .create();
-            block_data = gson.fromJson( block_JSON,
-                                        Column_mode_block_data.class );
-        }
-        catch( com.google.gson.JsonSyntaxException exception )
-        {
-            throw new RuntimeException( "Bad paste data format for " + Column_mode_block_transferable.get_mime_type() + ": " + exception );
-        }
+        Column_mode_block_data block_data = Column_mode_block_data.deserialize_from_JSON( block_JSON );
 
         ApplicationManager.getApplication()
                           .runWriteAction( () ->
@@ -727,6 +715,33 @@ public class Column_marking_component
             this.width = width;
             this.rows = rows;
         }
+
+        public static String serialize_to_JSON( Column_mode_block_data block_data )
+        {
+            Gson gson = new GsonBuilder().disableHtmlEscaping()
+                                         .setPrettyPrinting()
+                                         .create();
+            return gson.toJson( block_data );
+        }
+
+        public static Column_mode_block_data deserialize_from_JSON( String block_JSON )
+        {
+            Column_mode_block_data block_data;
+            try
+            {
+                Gson gson = new GsonBuilder().disableHtmlEscaping()
+                                             .setPrettyPrinting()
+                                             .create();
+                block_data = gson.fromJson( block_JSON,
+                                            Column_mode_block_data.class );
+            }
+            catch( com.google.gson.JsonSyntaxException exception )
+            {
+                throw new RuntimeException( "Bad paste data format for " + Column_mode_block_transferable.get_mime_type() + ": " + exception );
+            }
+
+            return block_data;
+        }
     }
 
     public static final class Column_mode_block_transferable
@@ -765,6 +780,7 @@ public class Column_marking_component
                 if( string.length() > maximum_width ) maximum_width = string.length();
             }
 
+            // Fill empty or smaller rows.
             for( int i = 0; i < m_data.length; i++ )
             {
                 if( m_data[i].length() < maximum_width )
