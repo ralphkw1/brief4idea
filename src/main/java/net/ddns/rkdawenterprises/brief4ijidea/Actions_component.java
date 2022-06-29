@@ -52,6 +52,8 @@ public class Actions_component
             {
                 brief_keymap.setCanModify( true );
                 keymap_manager.setActiveKeymap( brief_keymap );
+//                fix_keymap_conflicts( s_keymap_file_parsed,
+//                                      brief_keymap );
 
                 State_component.status_bar_message( Messages.message( "keymap.set.to.brief" ) );
             }
@@ -282,10 +284,40 @@ public class Actions_component
 
         for( Map.Entry<String, Keymap_action_data> keymap_file_entry : keymap_file.entrySet() )
         {
-            String action_ID = keymap_file_entry.getKey();
+            @NonNls String action_ID = keymap_file_entry.getKey();
             if( action_ID.startsWith( "net.ddns.rkdawenterprises.brief4ijidea.actions." ) )
             {
                 action_manager_ex.unregisterAction( action_ID );
+            }
+        }
+    }
+    
+    private static void fix_keymap_conflicts( @NotNull Map<String, Keymap_action_data> keymap_file,
+                                              @NotNull KeymapImpl brief_keymap )
+    {
+        for( Map.Entry<String, Keymap_action_data> keymap_file_entry : keymap_file.entrySet() )
+        {
+            String action_ID = keymap_file_entry.getKey();
+            Keymap_action_data keymap_action = keymap_file_entry.getValue();
+            for( KeyboardShortcut keyboard_shortcut : keymap_action.getShortcuts() )
+            {
+                final Map<String, ? extends List<KeyboardShortcut>> conflicts =
+                        brief_keymap.getConflicts( "",
+                                                   keyboard_shortcut );
+
+                for( Map.Entry<String, ? extends List<KeyboardShortcut>> keymap_file_conflict : conflicts.entrySet() )
+                {
+                    if( keymap_file_conflict.getKey()
+                                            .equals( action_ID ) ) continue;
+
+                    List<KeyboardShortcut> keyboard_shortcut_conflicts =
+                            keymap_file_conflict.getValue();
+                    for( KeyboardShortcut keyboard_shortcut_conflict : keyboard_shortcut_conflicts )
+                    {
+                        brief_keymap.removeShortcut( keymap_file_conflict.getKey(),
+                                                     keyboard_shortcut_conflict );
+                    }
+                }
             }
         }
     }

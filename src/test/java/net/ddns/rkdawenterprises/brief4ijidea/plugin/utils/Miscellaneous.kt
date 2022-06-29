@@ -16,6 +16,7 @@ import com.intellij.remoterobot.fixtures.EditorFixture
 import com.intellij.remoterobot.fixtures.JTreeFixture
 import com.intellij.remoterobot.search.locators.byXpath
 import com.intellij.remoterobot.stepsProcessing.step
+import com.intellij.remoterobot.utils.Keyboard
 import com.intellij.remoterobot.utils.waitFor
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.DialogFixture
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.DialogFixture.Companion.byTitle

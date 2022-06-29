@@ -25,17 +25,17 @@ class Remote_robot_client : AfterTestExecutionCallback, ParameterResolver
 {
     private val url: String = System.getProperty("remote-robot-url") ?: "http://127.0.0.1:22224"
 
-    private var initializaed = false
+    private var initialized = false
 
     private val client = OkHttpClient()
 
     init
     {
-        synchronized(initializaed) {
-            if(initializaed.not())
+        synchronized(initialized) {
+            if(initialized.not())
             {
                 StepWorker.registerProcessor(StepLogger())
-                initializaed = true
+                initialized = true
             }
         }
     }

@@ -9,6 +9,7 @@ package net.ddns.rkdawenterprises.brief4ijidea.plugin
 import com.intellij.remoterobot.RemoteRobot
 import com.intellij.remoterobot.fixtures.CommonContainerFixture
 import com.intellij.remoterobot.fixtures.ComponentFixture
+import com.intellij.remoterobot.fixtures.JListFixture
 import com.intellij.remoterobot.search.locators.byXpath
 import com.intellij.remoterobot.stepsProcessing.step
 import com.intellij.remoterobot.utils.keyboard
@@ -53,7 +54,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.awt.event.KeyEvent.*
 import java.time.Duration
-
 
 @ExtendWith(Remote_robot_client::class)
 class Main_test
@@ -128,14 +128,17 @@ class Main_test
                 waitFor { editor.hasText("Test") }
                 editor.findText("Test")
                     .click()
+
                 keyboard {
                     key(VK_END)
                     enter()
                 }
+
                 keyboard {
                     hotKey(VK_CONTROL,
                            VK_A)
                 }
+
                 keyboard { key(VK_DELETE) }
 
                 editor.insertTextAtLine(0,
@@ -153,7 +156,6 @@ class Main_test
 //            test_help_menu_command()
 //            test_quick_java_doc_command()
 //            test_undo_redo_commands()
-            // TODO: Issuing the hotkey for rename opens the dialog many times. For now, user must close all but one.
 //            test_change_output_file_command()
 //            test_beginning_of_line_command()
 //            test_end_of_line_command()
@@ -174,7 +176,94 @@ class Main_test
 //            test_open_line_command()
 //            test_mark_command()
 //            test_line_mark_command()
-            test_column_mark_command()
+//            test_column_mark_command()
+//            test_drop_bookmark_10_command()
+            test_paste_from_history_command()
+        }
+    }
+
+    private fun IdeaFrame.test_paste_from_history_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Paste from history. Description: Opens a dialog to paste an item from scrap history.")
+        {
+            keyboard {
+                hotKey(VK_SHIFT,
+                       VK_INSERT);
+            }
+
+            dialog("Choose Content to Paste")
+            {
+                button("Cancel").click();
+            }
+        }
+    }
+
+    /**
+     * Also tests "jump to bookmark" as well as the bookmark dialog command.
+     */
+    private fun IdeaFrame.test_drop_bookmark_10_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Drop bookmark 10. Description: Drops a numbered bookmark at the current position.")
+        {
+            val line_number = 110;
+            val alternate_line_number = 256;
+
+            editor_fixture.move_to_line(line_number);
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_0);
+            }
+
+            editor_fixture.move_to_line(alternate_line_number);
+
+            var current_position = editor_fixture.get_caret_logical_position();
+
+            assert( current_position.line == alternate_line_number)
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_J);
+                key(VK_0)
+            }
+
+            current_position = editor_fixture.get_caret_logical_position();
+
+            assert( current_position.line == line_number)
+
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_B);
+            }
+
+            waitFor { heavyWeightWindows().size == 1 }
+            val heavy_weight_window = heavyWeightWindows()[0];
+            heavy_weight_window.findText("Bookmarks");
+            val list_fixture = heavy_weight_window.find<JListFixture>(JListFixture:: class.java,
+                                                        byXpath("//div[@class='JBList']"),
+                                                        Duration.ofSeconds(5));
+            val items = list_fixture.collectItems();
+            var found_it = false;
+            for(i in items.indices)
+            {
+                println(items[i])
+                if(items[i].contains("(src/Test.java)") && items[i].contains((line_number + 1).toString()))
+                {
+                    found_it = true;
+                    list_fixture.clickItemAtIndex(i);
+                }
+            }
+            assert(found_it)
+
+            button(byXpath("//div[@myicon='remove.svg']")).click()
+
+            keyboard { key(VK_ESCAPE) }
         }
     }
 
@@ -667,7 +756,7 @@ class Main_test
 
             dialog("Go to Line:Column")
             {
-                button("OK").click()
+                button("Cancel").click()
             }
         }
     }

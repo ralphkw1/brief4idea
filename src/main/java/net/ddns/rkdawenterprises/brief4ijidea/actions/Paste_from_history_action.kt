@@ -1,37 +1,43 @@
-package net.ddns.rkdawenterprises.brief4ijidea.actions;
+@file:Suppress("RedundantSemicolon",
+               "ComponentNotRegistered",
+               "unused",
+               "ClassName",
+               "FunctionName",
+               "HardCodedStringLiteral",
+               "PrivatePropertyName")
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.editor.Editor;
-import org.jetbrains.annotations.NotNull;
+package net.ddns.rkdawenterprises.brief4ijidea.actions
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import net.ddns.rkdawenterprises.brief4ijidea.do_action
+import net.ddns.rkdawenterprises.brief4ijidea.stop_all_marking_modes
+import java.util.concurrent.atomic.AtomicBoolean
 
-@SuppressWarnings({ "ComponentNotRegistered", "unused" })
-public class Paste_from_history_action
-        extends Plugin_action
+class Paste_from_history_action(text: String?,
+                                description: String?) : Plugin_action(text,
+                                                                      description)
 {
-    public Paste_from_history_action( String text,
-                                      String description )
-    {
-        super( text,
-               description );
-    }
+    // Without this, remote robot may cause the dialog to open multiple times.
+    private val dialog_is_open = AtomicBoolean(false);
 
     /**
      * Implement this method to provide your action handler.
      *
      * @param e Carries information on the invocation place
      */
-    @Override
-    public void actionPerformed( @NotNull AnActionEvent e )
+    override fun actionPerformed(e: AnActionEvent)
     {
-        do_action( "PasteMultiple", e );
+        if(dialog_is_open.get()) return;
 
-        Editor editor = e.getData( CommonDataKeys.EDITOR );
-        if( editor == null ) return;
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
 
-        stop_all_marking_modes( editor, false );
+        dialog_is_open.set(true);
+        do_action("PasteMultiple",
+                  e)
+        dialog_is_open.set(false);
+        
+        stop_all_marking_modes(editor,
+                               false)
     }
 }

@@ -108,7 +108,7 @@ This extension adds key bindings and functionality that attempts to emulate many
     <tr><td>Alt + L</td><td>Line Mark toggle</td><td>Toggle line marking mode. Use cursor or single click mouse to move cursor and expand selection.</td></tr>
     <tr><td>Alt + C</td><td>Column Mark toggle<sup>*</sup></td><td>Toggle column marking mode. Use cursor or single click mouse to move cursor and expand selection.</td></tr>
     <tr><td>Alt + <i>[1-10]</i></td><td>Drop bookmark</td><td>Inserts a numbered (1-10) bookmark into the editor and the current cursor posiotion. Bookmark 10 is dropped using the 0 key.</td></tr>
-    <tr><td>Alt + J, <i>[1-10]</i></td><td>Jump to bookmark</td><td>Waits for a bookmark number, <i>[1-10]</i> then jumps to that number. Bookmark 10 is the 0 key.</td></tr>
+    <tr><td>Alt + J, <i>[1-10]</i></td><td>Jump to bookmark</td><td>Waits for a bookmark number (waits only for the default 2 seconds), <i>[1-10]</i> then jumps to that number. Bookmark 10 is the 0 key.</td></tr>
     <tr><td>Alt + B</td><td>Bookmark List</td><td>Open bookmark list dialog. Scroll and select a bookmark to jump to. Can also delete bookmarks. This is a new command and the key assignment was taken from the "buffer list" command, which is not implemented.</td></tr>
 </table>
 <table style="background-color:#F5FFFF">
