@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import org.jetbrains.annotations.NotNull;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.toggle_line_marking_mode;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.toggle_line_marking_mode;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Line_mark_action

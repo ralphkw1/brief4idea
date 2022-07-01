@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.datatransfer.DataFlavor;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.stop_all_marking_modes;
 import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })

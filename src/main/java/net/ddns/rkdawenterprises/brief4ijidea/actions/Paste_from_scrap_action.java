@@ -5,8 +5,8 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import org.jetbrains.annotations.NotNull;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.stop_all_marking_modes;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.stop_all_marking_modes;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Paste_from_scrap_action

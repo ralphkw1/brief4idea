@@ -9,11 +9,14 @@
 
 package net.ddns.rkdawenterprises.brief4ijidea
 
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.ActionManagerImpl
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.command.undo.UndoManager
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.LogicalPosition
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.messages.MessagesService
@@ -74,7 +77,7 @@ fun virtual_space_setting_warning(editor: Editor)
 
 fun warning_message(title: String?,
                     message: String,
-                    option: DialogWrapper.DoNotAskOption?): String?
+                    option: DialogWrapper.DoNotAskOption? = null): String?
 {
     val button_name = "OK";
 
@@ -201,4 +204,134 @@ fun capitalize_character_at_index(string: String,
                              index + 1)
                 .uppercase(Locale.getDefault()) +
             string.substring(index + 1)
+}
+
+fun do_action(action_ID: String,
+              an_action_event: AnActionEvent)
+{
+    val action_manager_ex = ActionManagerImpl.getInstanceEx();
+    val action = action_manager_ex.getAction(action_ID);
+    ActionUtil.performActionDumbAwareWithCallbacks(action,
+                                                   an_action_event,
+                                                   an_action_event.dataContext);
+}
+
+fun do_action(action_ID: String,
+              an_action_event: AnActionEvent,
+              an_action: AnAction)
+{
+    if(!should_promote(an_action, an_action_event.dataContext)) return;
+    val action_manager_ex = ActionManagerImpl.getInstanceEx();
+    val action = action_manager_ex.getAction(action_ID);
+
+    ActionUtil.performActionDumbAwareWithCallbacks(action,
+                                                   an_action_event,
+                                                   an_action_event.dataContext);
+}
+
+fun get_undo_manager(project: Project?): UndoManager
+{
+    return if(project != null && !project.isDefault) UndoManager.getInstance(project) else UndoManager.getGlobalInstance();
+}
+
+fun stop_all_marking_modes(editor: Editor,
+                           remove_selection: Boolean)
+{
+    Marking_component.stop_marking_mode(editor,
+                                        remove_selection)
+    Line_marking_component.stop_line_marking_mode(editor,
+                                                  remove_selection)
+    Column_marking_component.stop_column_marking_mode(editor,
+                                                      remove_selection)
+    State_component.status_bar_message(null)
+    if(remove_selection)
+    {
+        if(has_selection(editor))
+        {
+            editor.caretModel
+                .removeSecondaryCarets()
+            editor.selectionModel
+                .removeSelection()
+        }
+    }
+}
+
+fun stop_all_marking_modes(editor: Editor)
+{
+    stop_all_marking_modes(editor,
+                           true)
+}
+
+fun validate_position(editor: Editor,
+                      position: LogicalPosition): LogicalPosition?
+{
+    return editor.offsetToLogicalPosition(editor.logicalPositionToOffset(position))
+}
+
+fun editor_gained_focus(editor: Editor)
+{
+    stop_all_marking_modes(editor,
+                           false)
+}
+
+fun editor_lost_focus(editor: Editor)
+{
+    stop_all_marking_modes(editor,
+                           false)
+}
+
+fun toggle_marking_mode(editor: Editor)
+{
+    Line_marking_component.stop_line_marking_mode(editor,
+                                                  true)
+    Column_marking_component.stop_column_marking_mode(editor,
+                                                      true)
+    Marking_component.toggle_marking_mode(editor)
+}
+
+fun toggle_line_marking_mode(editor: Editor)
+{
+    Marking_component.stop_marking_mode(editor,
+                                        true)
+    Column_marking_component.stop_column_marking_mode(editor,
+                                                      true)
+    Line_marking_component.toggle_line_marking_mode(editor)
+}
+
+fun toggle_column_marking_mode(editor: Editor)
+{
+    Marking_component.stop_marking_mode(editor,
+                                        true)
+    Line_marking_component.stop_line_marking_mode(editor,
+                                                  true)
+    Column_marking_component.toggle_column_marking_mode(editor)
+}
+
+fun get_bottom_of_window_line_number(editor: Editor): Int
+{
+    val visible_area = get_editor_content_visible_area(editor);
+    val max_Y: Int = visible_area.y + visible_area.height - editor.lineHeight;
+    var visible_area_bottom_line_number = editor.yToVisualLine(max_Y);
+    if(visible_area_bottom_line_number > 0 &&
+        max_Y < editor.visualLineToY(visible_area_bottom_line_number) &&
+        visible_area.y <= editor.visualLineToY(visible_area_bottom_line_number - 1))
+    {
+        visible_area_bottom_line_number--;
+    }
+
+    return visible_area_bottom_line_number;
+}
+
+fun get_top_of_window_line_number(editor: Editor): Int
+{
+    val visible_area = get_editor_content_visible_area(editor);
+    var visible_area_top_line_number = editor.yToVisualLine(visible_area.y);
+    if(visible_area.y > editor.visualLineToY(visible_area_top_line_number) &&
+        visible_area.y + visible_area.height > editor.visualLineToY(visible_area_top_line_number + 1)
+    )
+    {
+        visible_area_top_line_number++;
+    }
+
+    return visible_area_top_line_number;
 }

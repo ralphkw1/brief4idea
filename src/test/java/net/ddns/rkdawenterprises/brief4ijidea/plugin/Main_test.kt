@@ -6,6 +6,8 @@
 
 package net.ddns.rkdawenterprises.brief4ijidea.plugin
 
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.remoterobot.RemoteRobot
 import com.intellij.remoterobot.fixtures.CommonContainerFixture
 import com.intellij.remoterobot.fixtures.ComponentFixture
@@ -16,6 +18,8 @@ import com.intellij.remoterobot.utils.keyboard
 import com.intellij.remoterobot.utils.waitFor
 import net.ddns.rkdawenterprises.brief4ijidea.Column_marking_component.Column_mode_block_data
 import net.ddns.rkdawenterprises.brief4ijidea.Column_marking_component.Column_mode_block_data.deserialize_from_JSON
+import net.ddns.rkdawenterprises.brief4ijidea.Messages
+import net.ddns.rkdawenterprises.brief4ijidea.State_component
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.IdeaFrame
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.actionMenu
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.pages.actionMenuItem
@@ -48,11 +52,14 @@ import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.get_visible_area_top_
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.move_to_line
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.scroll_to_line
 import net.ddns.rkdawenterprises.brief4ijidea.plugin.utils.tree_fixtures
+import net.ddns.rkdawenterprises.brief4ijidea.warning_message
 import org.apache.commons.lang.StringUtils
 import org.assertj.swing.core.MouseButton
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.awt.event.KeyEvent.*
+import java.lang.Math.abs
 import java.time.Duration
 
 @ExtendWith(Remote_robot_client::class)
@@ -62,7 +69,7 @@ class Main_test
     fun main_test(remote_robot: RemoteRobot) = with(remote_robot)
     {
         // If IDE is open and project/file are set up, then comment this line out to speed iterations.
-//        ide_setup()
+        ide_setup()
 
         idea {
             test_commands()
@@ -153,40 +160,153 @@ class Main_test
     {
         step("Test the commands") {
             // TODO: Prompt user to close browser.
-//            test_help_menu_command()
-//            test_quick_java_doc_command()
-//            test_undo_redo_commands()
-//            test_change_output_file_command()
-//            test_beginning_of_line_command()
-//            test_end_of_line_command()
-//            test_top_of_buffer_command()
-//            test_end_of_buffer_command()
-//            test_top_of_window_command()
-//            test_end_of_window_command()
-//            test_left_side_of_window_command()
-//            test_right_side_of_window_command()
-//            test_scroll_buffer_down_in_window_command()
-//            test_go_to_line_command()
-//            test_delete_line_command()
-//            test_delete_next_word_command()
-//            test_delete_previous_word_command()
-//            test_delete_to_beginning_of_line_command()
-//            test_delete_to_end_of_line_command()
-//            test_insert_mode_toggle_command()
-//            test_open_line_command()
-//            test_mark_command()
-//            test_line_mark_command()
-//            test_column_mark_command()
-//            test_drop_bookmark_10_command()
+            test_help_menu_command()
+            test_quick_java_doc_command()
+            test_undo_redo_commands()
+            test_change_output_file_command()
+            test_beginning_of_line_command()
+            test_end_of_line_command()
+            test_top_of_buffer_command()
+            test_end_of_buffer_command()
+            test_top_of_window_command()
+            test_end_of_window_command()
+            test_left_side_of_window_command()
+            test_right_side_of_window_command()
+            test_scroll_buffer_down_in_window_command()
+            test_go_to_line_command()
+            test_delete_line_command()
+            test_delete_next_word_command()
+            test_delete_previous_word_command()
+            test_delete_to_beginning_of_line_command()
+            test_delete_to_end_of_line_command()
+            test_insert_mode_toggle_command()
+            test_open_line_command()
+            test_mark_command()
+            test_line_mark_command()
+            test_column_mark_command()
+            test_drop_bookmark_10_command()
             test_paste_from_history_command()
+            test_line_to_top_of_window_command()
+            test_center_line_in_window_command()
+            test_line_to_bottom_of_window_command()
+            test_search_forward_command()
+            test_translate_forward_command()
+        }
+    }
+
+    private fun IdeaFrame.test_translate_forward_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Search forward. Description: Searches forward from the current position to the end of the current buffer for the given pattern.")
+        {
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_T);
+            }
+
+            val search_replace_component = find(CommonContainerFixture:: class.java, byXpath("//div[@class='SearchReplaceComponent']"), Duration.ofSeconds(5));
+            search_replace_component.button(byXpath("//div[@text='Replace']"), Duration.ofSeconds(5)).click();
+            search_replace_component.button(byXpath("//div[@defaulticon='close.svg']"), Duration.ofSeconds(5)).click();
+        }
+    }
+
+    private fun IdeaFrame.test_search_forward_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Search forward. Description: Searches forward from the current position to the end of the current buffer for the given pattern.")
+        {
+            keyboard {
+                hotKey(VK_ALT,
+                       VK_S);
+            }
+
+            val search_replace_component = find(CommonContainerFixture:: class.java, byXpath("//div[@class='SearchReplaceComponent']"), Duration.ofSeconds(5));
+            search_replace_component.button(byXpath("//div[@defaulticon='close.svg']"), Duration.ofSeconds(5)).click();
+        }
+    }
+
+    private fun IdeaFrame.test_line_to_bottom_of_window_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Line to bottom of window. Description: Scrolls the buffer, moving the current line to the bottom of the window.")
+        {
+            val line_number = 110;
+            editor_fixture.move_to_line(line_number);
+            var bottom = editor_fixture.get_visible_area_bottom_offset_line();
+            assert((bottom[1] != line_number) && (bottom[3] != line_number))
+
+            // Have to issue the command twice. Not sure why. It works fine manually.
+            keyboard {
+                hotKey(VK_CONTROL,
+                       VK_B);
+                hotKey(VK_CONTROL,
+                       VK_B);
+            }
+
+            bottom = editor_fixture.get_visible_area_bottom_offset_line();
+            assert((bottom[1] == line_number) || (bottom[3] == line_number))
+        }
+    }
+
+    private fun IdeaFrame.test_center_line_in_window_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Center line in window. Description: Scrolls the buffer, moving the current line to the center of the current window.")
+        {
+            val line_number = 110;
+            editor_fixture.move_to_line(line_number);
+            var bottom = editor_fixture.get_visible_area_bottom_offset_line()[1];
+            var top = editor_fixture.get_visible_area_top_offset_line()[1];
+            var center = top + ((bottom - top) / 2);
+            assert(center != line_number);
+
+            // Have to issue the command twice. Not sure why. It works fine manually.
+            keyboard {
+                hotKey(VK_CONTROL,
+                       VK_C);
+                hotKey(VK_CONTROL,
+                       VK_C);
+            }
+
+            bottom = editor_fixture.get_visible_area_bottom_offset_line()[1];
+            top = editor_fixture.get_visible_area_top_offset_line()[1];
+            center = top + ((bottom - top) / 2);
+            assert(kotlin.math.abs(line_number - center) <= 1)
+        }
+    }
+
+    private fun IdeaFrame.test_line_to_top_of_window_command()
+    {
+        val text_editor_fixture = textEditor()
+        val editor_fixture = text_editor_fixture.editor
+
+        step("Command: Line to top of window. Description: Scrolls the buffer, moving the current line to the top of the window.")
+        {
+            val line_number = 110;
+            editor_fixture.move_to_line(line_number);
+            var top = editor_fixture.get_visible_area_top_offset_line();
+            assert((top[1] != line_number) && (top[3] != line_number))
+
+            keyboard {
+                hotKey(VK_CONTROL,
+                       VK_T);
+            }
+
+            top = editor_fixture.get_visible_area_top_offset_line();
+            assert((top[1] == line_number) || (top[3] == line_number))
         }
     }
 
     private fun IdeaFrame.test_paste_from_history_command()
     {
-        val text_editor_fixture = textEditor()
-        val editor_fixture = text_editor_fixture.editor
-
         step("Command: Paste from history. Description: Opens a dialog to paste an item from scrap history.")
         {
             keyboard {
@@ -225,7 +345,7 @@ class Main_test
 
             var current_position = editor_fixture.get_caret_logical_position();
 
-            assert( current_position.line == alternate_line_number)
+            assert(current_position.line == alternate_line_number)
 
             keyboard {
                 hotKey(VK_ALT,
@@ -235,7 +355,7 @@ class Main_test
 
             current_position = editor_fixture.get_caret_logical_position();
 
-            assert( current_position.line == line_number)
+            assert(current_position.line == line_number)
 
             keyboard {
                 hotKey(VK_ALT,
@@ -245,9 +365,9 @@ class Main_test
             waitFor { heavyWeightWindows().size == 1 }
             val heavy_weight_window = heavyWeightWindows()[0];
             heavy_weight_window.findText("Bookmarks");
-            val list_fixture = heavy_weight_window.find<JListFixture>(JListFixture:: class.java,
-                                                        byXpath("//div[@class='JBList']"),
-                                                        Duration.ofSeconds(5));
+            val list_fixture = heavy_weight_window.find<JListFixture>(JListFixture::class.java,
+                                                                      byXpath("//div[@class='JBList']"),
+                                                                      Duration.ofSeconds(5));
             val items = list_fixture.collectItems();
             var found_it = false;
             for(i in items.indices)
@@ -321,9 +441,10 @@ class Main_test
             }
 
             // Attempt to duplicate column paste behavior.
-            val test_text_of_lines_after_paste = StringBuilder( editor_fixture.get_line(line_number - 1));
+            val test_text_of_lines_after_paste = StringBuilder(editor_fixture.get_line(line_number - 1));
             val test_text_of_lines = editor_fixture.get_lines(line_number,
-                                     number_of_lines).split('\n');
+                                                              number_of_lines)
+                .split('\n');
             for(i in test_text_of_lines.indices)
             {
                 if(i < number_of_lines)
@@ -334,7 +455,7 @@ class Main_test
                     if(test_text_of_lines[i].length < column_number)
                     {
                         modified_line.append(StringUtils.repeat(" ",
-                                                  column_number - test_text_of_lines[i].length));
+                                                                column_number - test_text_of_lines[i].length));
                     }
 
                     modified_line.insert(column_number,
@@ -492,7 +613,6 @@ class Main_test
             val line_number = 43;
             val text_of_line = editor_fixture.get_line(line_number);
             val text_of_second_line = editor_fixture.get_line(line_number + 1);
-            val text_of_third_line = editor_fixture.get_line(line_number + 2);
             val column_number = text_of_line.length / 2;
             editor_fixture.move_to_line(line_number,
                                         column_number)
@@ -1249,25 +1369,24 @@ class Main_test
         }
     }
 
-// TODO:
-//    @AfterEach
-//    fun closeProject(remoteRobot: RemoteRobot) = with(remoteRobot) {
-//        idea {
-//            if(remoteRobot.isMac())
-//            {
-//                keyboard {
-//                    hotKey(VK_SHIFT,
-//                           VK_META,
-//                           VK_A);
-//                    enterText("Close Project");
-//                    enter();
-//                }
-//            }
-//            else
-//            {
-//                menuBar.select("File",
-//                               "Close Project");
-//            }
-//        }
-//    }
+    @AfterEach
+    fun closeProject(remoteRobot: RemoteRobot) = with(remoteRobot) {
+        idea {
+            if(remoteRobot.isMac())
+            {
+                keyboard {
+                    hotKey(VK_SHIFT,
+                           VK_META,
+                           VK_A);
+                    enterText("Close Project");
+                    enter();
+                }
+            }
+            else
+            {
+                menuBar.select("File",
+                               "Close Project");
+            }
+        }
+    }
 }

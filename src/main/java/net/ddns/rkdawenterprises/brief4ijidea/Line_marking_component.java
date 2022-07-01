@@ -18,8 +18,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.validate_position;
 import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.has_selection;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.validate_position;
 
 @SuppressWarnings({ "UnnecessaryReturnStatement", "UnnecessaryLocalVariable" })
 public class Line_marking_component

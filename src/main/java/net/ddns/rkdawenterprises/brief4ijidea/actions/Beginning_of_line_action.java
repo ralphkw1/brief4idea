@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.do_action;
 import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.get_editor_content_visible_area;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused", "UnnecessaryReturnStatement" })

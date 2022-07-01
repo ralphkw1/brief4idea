@@ -128,15 +128,15 @@ This extension adds key bindings and functionality that attempts to emulate many
     <tr><td>Shift + F5</td><td>Search again</td><td>Searches forwards using previous search parameters.</td></tr>
     <tr><td>Alt + F5</td><td>Search backward</td><td>Searches backwards using previous search parameters.</td></tr>
     <tr><td>Shift + F6</td><td>Translate again</td><td>Translates (replaces) forwards using previous search/replace parameters. Only works if the search dialog is open.</td></tr>
-    <tr><td>Ctrl + R</td><td>Repeat</td><td>Opens the &quot;Repeat Dialog&quot;, then repeats the requested command, or inserts the requested char/string into the editor, the requested number of times. Not all commands are supported or work well. Actually accepts any &quot;non-printable&quot; key sequence, so not sure what works actually.</td></tr>
+    <tr><td>Ctrl + R</td><td>Repeat</td><td>!!!Not functional (WIP)!!! Opens the &quot;Repeat Dialog&quot;, then repeats the requested command, or inserts the requested char/string into the editor, the requested number of times. Not all commands are supported or work well. Actually accepts any &quot;non-printable&quot; key sequence, so not sure what works actually.</td></tr>
 </table>
 <div style="background-color:#F5FFFF">
 <h3 style="color:#0000AA">Notes<sup>*</sup></h3>
 <ul>
 <li>The extension may not work as well with line/code folding (not well tested). So best to unfold the area of the file you are working on if you want the commands to work as expected.</li>
-<li>I can only account for Brief defined keystrokes affect in the marking modes. Turn off an active marking mode to use other commands. I couldn't find a way to generally monitor all keystrokes to affect/or disable an active marking mode.</li>
+<li>I was only able to account for most Brief defined keystrokes affect in the marking modes. Turn off an active marking mode to use other commands. I couldn't find a way to generally monitor all keystrokes to affect/or disable an active marking mode as a result of a keystroke.</li>
 <li>Does not support multiple carets (not tested).</li>
-<li>Column marking mode is independent of and does not work with IDEA Column Selection Mode.</li>
+<li>Column marking mode is independent of, and does not work with IDEA Column Selection Mode. It creates a custom MIME type in the clipboard.</li>
 </ul>
 </div>
 

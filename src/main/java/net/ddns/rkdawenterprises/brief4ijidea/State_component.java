@@ -31,8 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.Map;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.editor_gained_focus;
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.editor_lost_focus;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.editor_gained_focus;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.editor_lost_focus;
 
 /**
  * Supports storing the application settings in a persistent way. The {@link State} and {@link Storage} annotations

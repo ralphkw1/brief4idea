@@ -32,6 +32,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -41,6 +42,9 @@ class Repeat_action(text: String?,
                     description: String?) : Plugin_action(text,
                                                           description)
 {
+    // Without this, remote robot may cause the dialog to open multiple times.
+    private val dialog_is_open = AtomicBoolean(false);
+
     init
     {
         isEnabledInModalContext = true;
@@ -90,6 +94,10 @@ class Repeat_action(text: String?,
      */
     override fun actionPerformed(e: AnActionEvent)
     {
+        if(dialog_is_open.get()) return;
+
+        dialog_is_open.set(true);
+
         val editor = e.getData(CommonDataKeys.EDITOR_EVEN_IF_INACTIVE) ?: return;
         val project = e.getData(CommonDataKeys.PROJECT) ?: return;
         val file = e.getData(CommonDataKeys.PSI_FILE) ?: return;
@@ -121,6 +129,8 @@ class Repeat_action(text: String?,
                 Repeat_action_dialog.m_title,
                 null);
         }
+        
+        dialog_is_open.set(false);
     }
 }
 
@@ -421,6 +431,7 @@ internal class Repeat_action_dialog(private val m_project: Project,
                                  ignoreCase = true) && key[2].equals("BACKSPACE",
                                                                      ignoreCase = true))
                 {
+println("backspace)")
                     if(m_count < 10)
                     {
                         m_count = 1;

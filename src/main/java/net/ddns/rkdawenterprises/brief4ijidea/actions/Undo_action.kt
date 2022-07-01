@@ -28,8 +28,7 @@ class Undo_action(text: String?,
         val dataContext: DataContext = e.dataContext
         val editor = PlatformDataKeys.FILE_EDITOR.getData(dataContext)
         val project = CommonDataKeys.PROJECT.getData(dataContext)
-        val undoManager: UndoManager = get_undo_manager(project,
-                                                        dataContext)
+        val undoManager: UndoManager = get_undo_manager(project)
         if(undoManager.isUndoAvailable(editor))
         {
             do_action("\$Undo",

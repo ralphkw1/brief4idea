@@ -9,9 +9,7 @@ import net.ddns.rkdawenterprises.brief4ijidea.Actions_component;
 import net.ddns.rkdawenterprises.brief4ijidea.Messages;
 import org.jetbrains.annotations.NotNull;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.toggle_column_marking_mode;
-import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.virtual_space_setting_warning;
-import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.warning_message;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.*;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Column_mark_action

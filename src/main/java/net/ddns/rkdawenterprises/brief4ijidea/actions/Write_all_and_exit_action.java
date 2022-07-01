@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import net.ddns.rkdawenterprises.brief4ijidea.State_component;
 import org.jetbrains.annotations.NotNull;
 
-import static net.ddns.rkdawenterprises.brief4ijidea.Actions_supportKt.do_action;
+import static net.ddns.rkdawenterprises.brief4ijidea.MiscellaneousKt.do_action;
 
 @SuppressWarnings({ "ComponentNotRegistered", "unused" })
 public class Write_all_and_exit_action

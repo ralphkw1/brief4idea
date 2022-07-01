@@ -336,7 +336,7 @@
   </action>
 
   <!--  Command: Quick window switch. Description: Changes windows according to the arrow key that points to the window. -->
-    <!-- Current "alt LEFT" and "alt RIGHT" currently changes editor windows... -->
+    <!-- Current "alt LEFT" and "alt RIGHT" currently changes editor windows. PGE... -->
 
   <!-- Search and translate -->
       <!-- TODO: Investigate LOE to implement original Brief search and translate. Currently just opens the existing dialog. -->
@@ -370,9 +370,10 @@
     <!-- See TODO above...-->
 
   <!--  Command: Repeat. Description: Opens a dialog to repeat the requested command, or insert the requested char/string into the editor, the given number of times. -->
-  <action id="net.ddns.rkdawenterprises.brief4ijidea.actions.repeat">
-    <keyboard-shortcut first-keystroke="control R"/>
-  </action>
+  <!-- TODO: This command is a "work in progress"... -->
+  <!-- <action id="net.ddns.rkdawenterprises.brief4ijidea.actions.repeat"> -->
+  <!--   <keyboard-shortcut first-keystroke="control R"/> -->
+  <!-- </action> -->
 
   <!--  Command: Go to Definition. Description: Since "control B" is remapped, and this command is used so much, giving it an alternate. -->
   <action id="net.ddns.rkdawenterprises.brief4ijidea.actions.go_to_definition">
